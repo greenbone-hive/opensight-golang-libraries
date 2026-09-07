@@ -1,0 +1,36 @@
+// SPDX-FileCopyrightText: 2026 Greenbone AG
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
+package provider
+
+import "testing"
+
+// TestValid accepts exactly the supported providers and rejects anything else,
+// including the empty string and a near-miss casing.
+func TestValid(t *testing.T) {
+	for _, p := range All {
+		if !Valid(p) {
+			t.Errorf("Valid(%q) = false, want true (it is in All)", p)
+		}
+	}
+	for _, p := range []Provider{"", "AWS", "gcpx", "oracle"} {
+		if Valid(p) {
+			t.Errorf("Valid(%q) = true, want false", p)
+		}
+	}
+}
+
+// TestAllHasNoDuplicates guards against a copy-paste slip in All.
+func TestAllHasNoDuplicates(t *testing.T) {
+	seen := map[Provider]struct{}{}
+	for _, p := range All {
+		if _, dup := seen[p]; dup {
+			t.Errorf("All lists %q more than once", p)
+		}
+		seen[p] = struct{}{}
+	}
+	if len(All) != 3 {
+		t.Fatalf("All has %d entries, want 3 (aws, azure, gcp)", len(All))
+	}
+}

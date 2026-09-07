@@ -10,6 +10,7 @@
 The code maintained in this repository is used by the Greenbone OpenSight Backend Components written in GoLang.
 
 The following functionalities are provided:
+* [assets](pkg/assets/README.md) - the canonical asset taxonomy: category, type, identity claims and computed-value keys
 * [configReader](pkg/configReader/README.md) - reads the configuration based on environment variables with predefined defaults
 * [dbcrypt](pkg/dbcrypt/README.md) - provides encryption / decryption for fields of entities persisted with GORM
 * [errorResponses](pkg/errorResponses/README.md) - rest api models for errors
@@ -17,6 +18,7 @@ The following functionalities are provided:
 * [notifications](pkg/notifications/README.md) - a client to send notifications to the openSight Notification Service 
 * [openSearch](pkg/openSearch/README.md) - a client and extension functions to query openSearch - suited for the [query](pkg/query/README.md) package
 * [postgres](pkg/postgres/README.md) - provides utilities for building conditional queries for PostgreSQL databases
+* [provider](pkg/provider/README.md) - the canonical cloud provider value set and its validation
 * [query](pkg/query/README.md) - provides basic selector and response objects for requests, including filter, paging and sorting
 * [retryableRequest](pkg/retryableRequest/README.md) - provides function to execute a http request with retries on failures
 * [secretfiles](pkg/secretfiles/README.md) - helps with accessing secrets stored in files
