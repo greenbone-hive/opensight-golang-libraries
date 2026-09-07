@@ -47,7 +47,7 @@ import "github.com/greenbone/opensight-golang-libraries/pkg/provider"
 <a name="All"></a>
 
 ```go
-var All = []Provider{AWS, Azure, GCP}
+var All = []Provider{AWS, Azure, GCP, GreenboneAppliance}
 ```
 
 <a name="Valid"></a>
@@ -72,10 +72,10 @@ type Provider string
 
 ```go
 const (
-    AWS          Provider = "aws"
-    Azure        Provider = "azure"
-    GCP          Provider = "gcp"
-    GB_APPLIANCE Provider = "greenbone_appliance"
+    AWS                Provider = "aws"
+    Azure              Provider = "azure"
+    GCP                Provider = "gcp"
+    GreenboneAppliance Provider = "greenbone_appliance"
 )
 ```
 

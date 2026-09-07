@@ -7,13 +7,13 @@ package provider
 type Provider string
 
 const (
-	AWS          Provider = "aws"
-	Azure        Provider = "azure"
-	GCP          Provider = "gcp"
-	GB_APPLIANCE Provider = "greenbone_appliance"
+	AWS                Provider = "aws"
+	Azure              Provider = "azure"
+	GCP                Provider = "gcp"
+	GreenboneAppliance Provider = "greenbone_appliance"
 )
 
-var All = []Provider{AWS, Azure, GCP}
+var All = []Provider{AWS, Azure, GCP, GreenboneAppliance}
 
 func Valid(p Provider) bool {
 	for _, v := range All {
