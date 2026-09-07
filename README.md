@@ -18,7 +18,7 @@ The following functionalities are provided:
 * [notifications](pkg/notifications/README.md) - a client to send notifications to the openSight Notification Service 
 * [openSearch](pkg/openSearch/README.md) - a client and extension functions to query openSearch - suited for the [query](pkg/query/README.md) package
 * [postgres](pkg/postgres/README.md) - provides utilities for building conditional queries for PostgreSQL databases
-* [provider](pkg/provider/README.md) - the canonical cloud provider value set and its validation
+* [provider](pkg/provider/README.md) - the canonical value set for the systems assets are discovered from, and its validation
 * [query](pkg/query/README.md) - provides basic selector and response objects for requests, including filter, paging and sorting
 * [retryableRequest](pkg/retryableRequest/README.md) - provides function to execute a http request with retries on failures
 * [secretfiles](pkg/secretfiles/README.md) - helps with accessing secrets stored in files

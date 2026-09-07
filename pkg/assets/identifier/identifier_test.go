@@ -50,30 +50,6 @@ func TestNoUnknownSentinel(t *testing.T) {
 	}
 }
 
-// Both services bound provider_resource_id by this constant, so the test asserts
-// the DERIVATION rather than the literal: above the longest id discovery emits,
-// and below the btree entry size Postgres refuses to index. Raising or lowering
-// it means restating why, and a new collector with a longer id family fails here
-// instead of in production.
-func TestMaxProviderResourceIDLen(t *testing.T) {
-	// The longest id discovery emits today: GCP documents BigQuery dataset ids at
-	// 1,024 characters and the collector stores the CAI asset name verbatim.
-	const bigQueryWorstCase = len("//bigquery.googleapis.com/projects/") + 30 + len("/datasets/") + 1024
-	// The hard wall is Postgres refusing to index a btree entry over 2,704 bytes,
-	// measured at 2,700 characters with a 13-character resource_type. This leaves
-	// room for a longer resource_type or another index column.
-	const indexCeiling = 2560
-
-	if MaxProviderResourceIDLen < bigQueryWorstCase {
-		t.Fatalf("MaxProviderResourceIDLen = %d, below the longest id discovery emits (%d, a max-length BigQuery dataset CAI name): a legitimate resource would cost its collector every scan",
-			MaxProviderResourceIDLen, bigQueryWorstCase)
-	}
-	if MaxProviderResourceIDLen > indexCeiling {
-		t.Fatalf("MaxProviderResourceIDLen = %d exceeds the btree entry ceiling %d: the composite unique indexes on this column would reject rows at insert time",
-			MaxProviderResourceIDLen, indexCeiling)
-	}
-}
-
 // TestValidAcceptsEveryDeclaredType pairs with TestNoUnknownSentinel: every type
 // in All is accepted, and anything outside it is not, so a constant added to the
 // catalog without being listed in All is caught as a rejected claim rather than

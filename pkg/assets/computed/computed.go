@@ -7,8 +7,8 @@
 // topology graph-build reads. Using these constants instead of string literals
 // makes a misspelled or divergent key (parentID vs parentId, vpcId vs networkId,
 // account_id vs accountId) a compile error instead of a silently broken graph
-// join. Grown phase by phase, matching the topology phase docs; raw
-// provider-specific keys are NOT here (they are not the contract).
+// join. Raw provider-specific keys are NOT here: they are not the contract, and
+// a key earns a constant only once both sides agree on it.
 package computed
 
 // Common envelope (every node).

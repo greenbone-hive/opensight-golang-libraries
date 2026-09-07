@@ -10,4 +10,4 @@ Subpackages:
 * [assetcategory](assetcategory/README.md) - the coarse grouping an asset type belongs to
 * [assettype](assettype/README.md) - the provider-neutral asset type catalog, each type carrying its category
 * [computed](computed/README.md) - the canonical keys for values derived from a discovered resource
-* [identifier](identifier/README.md) - the asset-identity claim types and their matching precedence
+* [identifier](identifier/README.md) - the asset-identity claim types
