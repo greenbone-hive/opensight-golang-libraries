@@ -8,13 +8,12 @@
 import "github.com/greenbone/opensight-golang-libraries/pkg/assets/identifier"
 ```
 
-Package identifier is the canonical asset\-identity claim taxonomy. Shared so discovery emits, and the identity / reconciliation engine and the sensor consume, ONE typed value set with one precedence order, instead of each service redefining the enum. The values are the exact snake\_case strings stored and matched on end to end: no per\-service translation. Mirrors the provider package pattern.
+Package identifier is the canonical asset\-identity claim taxonomy. Shared so discovery emits, and the identity / reconciliation engine and the sensor consume, ONE typed value set, instead of each service redefining the enum. The values are the exact snake\_case strings stored and matched on end to end: no per\-service translation. How strongly a claim weighs in a match is a consumer's policy, not part of the taxonomy, so it does not live here. Mirrors the provider package pattern.
 
 ## Index
 
 - [Constants](<#constants>)
 - [Variables](<#variables>)
-- [func Precedence\(t Type\) int](<#Precedence>)
 - [func Valid\(t Type\) bool](<#Valid>)
 - [type Type](<#Type>)
 
@@ -57,17 +56,8 @@ var All = []Type{
 }
 ```
 
-<a name="Precedence"></a>
-## func [Precedence](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/assets/identifier/identifier.go#L85>)
-
-```go
-func Precedence(t Type) int
-```
-
-Precedence is the matching weight of a claim type: higher means a stronger, less collision\-prone identity signal. It drives match scoring and which shared identifier keys a conflict. 0 for unknown types.
-
 <a name="Valid"></a>
-## func [Valid](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/assets/identifier/identifier.go#L72>)
+## func [Valid](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/assets/identifier/identifier.go#L74>)
 
 ```go
 func Valid(t Type) bool
@@ -76,7 +66,7 @@ func Valid(t Type) bool
 Valid reports whether t is a known claim type.
 
 <a name="Type"></a>
-## type [Type](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/assets/identifier/identifier.go#L13>)
+## type [Type](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/assets/identifier/identifier.go#L15>)
 
 Type is a canonical asset\-identity claim type.
 

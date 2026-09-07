@@ -30,7 +30,7 @@ var All = []Category{
 ```
 
 <a name="Category"></a>
-## type [Category](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/assets/assetcategory/assetcategory.go#L12>)
+## type [Category](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/assets/assetcategory/assetcategory.go#L12>)
 
 Category is a canonical, provider\-neutral asset category.
 

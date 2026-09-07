@@ -945,7 +945,7 @@ var All = []string{
 ```
 
 <a name="IsCanonical"></a>
-## func [IsCanonical](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/assets/computed/computed.go#L935>)
+## func [IsCanonical](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/assets/computed/computed.go#L935>)
 
 ```go
 func IsCanonical(key string) bool

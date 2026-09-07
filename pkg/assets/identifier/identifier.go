@@ -3,10 +3,12 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 // Package identifier is the canonical asset-identity claim taxonomy.
-// Shared so discovery emits, and the identity / reconciliation engine and the sensor
-// consume, ONE typed value set with one precedence order, instead of each service
-// redefining the enum. The values are the exact snake_case strings stored and
-// matched on end to end: no per-service translation. Mirrors the provider package pattern.
+// Shared so discovery emits, and the identity / reconciliation engine and the
+// sensor consume, ONE typed value set, instead of each service redefining the
+// enum. The values are the exact snake_case strings stored and matched on end to
+// end: no per-service translation. How strongly a claim weighs in a match is a
+// consumer's policy, not part of the taxonomy, so it does not live here.
+// Mirrors the provider package pattern.
 package identifier
 
 // Type is a canonical asset-identity claim type.
@@ -77,28 +79,4 @@ func Valid(t Type) bool {
 	}
 
 	return false
-}
-
-// Precedence is the matching weight of a claim type: higher means a stronger,
-// less collision-prone identity signal. It drives match scoring and which
-// shared identifier keys a conflict. 0 for unknown types.
-func Precedence(t Type) int {
-	switch t {
-	case BiosUUID:
-		return 100
-	case SerialNumber:
-		return 90
-	case ProviderResourceID:
-		return 80
-	case MACAddress:
-		return 70
-	case FQDN:
-		return 60
-	case Hostname:
-		return 50
-	case IPv4, IPv6:
-		return 30
-	default:
-		return 0
-	}
 }

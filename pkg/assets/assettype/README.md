@@ -185,7 +185,7 @@ var All = []Type{
 ```
 
 <a name="CategoryOf"></a>
-## func [CategoryOf](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/assets/assettype/assettype.go#L505>)
+## func [CategoryOf](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/assets/assettype/assettype.go#L505>)
 
 ```go
 func CategoryOf(t Type) assetcategory.Category
@@ -194,7 +194,7 @@ func CategoryOf(t Type) assetcategory.Category
 CategoryOf returns the category for a type, or assetcategory.Unknown if the type is not in the catalog.
 
 <a name="IsKnown"></a>
-## func [IsKnown](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/assets/assettype/assettype.go#L514>)
+## func [IsKnown](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/assets/assettype/assettype.go#L514>)
 
 ```go
 func IsKnown(t Type) bool
@@ -203,7 +203,7 @@ func IsKnown(t Type) bool
 IsKnown reports whether t is in the catalog.
 
 <a name="Type"></a>
-## type [Type](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/assets/assettype/assettype.go#L14>)
+## type [Type](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/assets/assettype/assettype.go#L14>)
 
 Type is a canonical, provider\-neutral asset type.
 

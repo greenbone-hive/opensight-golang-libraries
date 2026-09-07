@@ -48,9 +48,6 @@ func TestNoUnknownSentinel(t *testing.T) {
 	if Valid(Type("unknown")) {
 		t.Error(`Valid("unknown") = true, want false: the sentinel is not an identity claim`)
 	}
-	if Precedence(Type("unknown")) != 0 {
-		t.Error(`Precedence("unknown") should be 0 like any unrecognized type`)
-	}
 }
 
 // Both services bound provider_resource_id by this constant, so the test asserts
@@ -90,35 +87,6 @@ func TestValidAcceptsEveryDeclaredType(t *testing.T) {
 	for _, notAType := range []Type{"", "hostname ", "HOSTNAME", "uuid", "provider-resource-id"} {
 		if Valid(notAType) {
 			t.Errorf("Valid(%q) = true, want false: the values are matched as exact strings", notAType)
-		}
-	}
-}
-
-// TestPrecedenceOrder asserts the RANKING rather than the numbers: what callers
-// depend on is that a hardware-bound claim outranks a name-bound one and that a
-// name outranks an address, so the weights can be re-spaced without touching
-// this test, while a reordering that changes which claim wins a conflict fails.
-func TestPrecedenceOrder(t *testing.T) {
-	// Strongest to weakest. IPv4 and IPv6 are deliberately absent: they tie.
-	ranked := []Type{BiosUUID, SerialNumber, ProviderResourceID, MACAddress, FQDN, Hostname, IPv4}
-	for i := 1; i < len(ranked); i++ {
-		stronger, weaker := ranked[i-1], ranked[i]
-		if Precedence(stronger) <= Precedence(weaker) {
-			t.Errorf("Precedence(%q) = %d, not above Precedence(%q) = %d: the conflict winner would change",
-				stronger, Precedence(stronger), weaker, Precedence(weaker))
-		}
-	}
-
-	// An address is an address: neither IP family is a stronger identity signal.
-	if Precedence(IPv4) != Precedence(IPv6) {
-		t.Errorf("Precedence(IPv4) = %d and Precedence(IPv6) = %d differ: an asset would match differently by IP family",
-			Precedence(IPv4), Precedence(IPv6))
-	}
-
-	// A declared claim always carries weight; 0 is reserved for unrecognized types.
-	for _, id := range All {
-		if Precedence(id) <= 0 {
-			t.Errorf("Precedence(%q) = %d: a declared claim type must outweigh an unrecognized one", id, Precedence(id))
 		}
 	}
 }

@@ -26,7 +26,7 @@ var All = []Provider{AWS, Azure, GCP}
 ```
 
 <a name="Valid"></a>
-## func [Valid](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/provider/provider.go#L26>)
+## func [Valid](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/provider/provider.go#L26>)
 
 ```go
 func Valid(p Provider) bool
@@ -35,7 +35,7 @@ func Valid(p Provider) bool
 Valid reports whether p is a known provider.
 
 <a name="Provider"></a>
-## type [Provider](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/provider/provider.go#L13>)
+## type [Provider](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/provider/provider.go#L13>)
 
 Provider is a canonical cloud provider.
 
