@@ -26,7 +26,7 @@ const (
     AdapterProvider = "adapterProvider"
     ResourceType    = "resourceType"
     ResourceID      = "resourceId"
-    AccountID       = "accountId" // canonical scope FK (12-digit / sub GUID / projectId)
+    AccountID       = "accountId"
     AccountName     = "accountName"
     OrganizationID  = "organizationId"
     Region          = "region"
@@ -54,7 +54,7 @@ const (
 )
 ```
 
-<a name="ProjectID"></a>GCP\-native aliases kept alongside the canonical envelope.
+<a name="ProjectID"></a>GCP\-native aliases
 
 ```go
 const (
@@ -63,11 +63,11 @@ const (
 )
 ```
 
-<a name="NetworkID"></a>Network core \(phase 2\): VirtualNetwork \+ Subnet.
+<a name="NetworkID"></a>Network cores
 
 ```go
 const (
-    NetworkID           = "networkId" // Contains FK: subnet/NIC/... -> VirtualNetwork node id
+    NetworkID           = "networkId"
     CidrBlocks          = "cidrBlocks"
     IPv6CidrBlocks      = "ipv6CidrBlocks"
     IsDefault           = "isDefault"

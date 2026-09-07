@@ -8,8 +8,6 @@
 import "github.com/greenbone/opensight-golang-libraries/pkg/assets/assetcategory"
 ```
 
-Package assetcategory is the single source of the canonical asset categories: the high\-level group every asset Type belongs to. Callers write assetcategory.Tenancy. The Type values and the type\-\>category mapping live in the sibling assettype package; nothing here references a parent catalog.
-
 ## Index
 
 - [Variables](<#variables>)
@@ -18,7 +16,7 @@ Package assetcategory is the single source of the canonical asset categories: th
 
 ## Variables
 
-<a name="All"></a>All is every category constant, for iteration and parity checks.
+<a name="All"></a>
 
 ```go
 var All = []Category{
@@ -30,15 +28,15 @@ var All = []Category{
 ```
 
 <a name="Category"></a>
-## type [Category](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/assets/assetcategory/assetcategory.go#L12>)
+## type [Category](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/assets/assetcategory/assetcategory.go#L7>)
 
-Category is a canonical, provider\-neutral asset category.
+
 
 ```go
 type Category string
 ```
 
-<a name="Unknown"></a>The canonical asset categories. Unknown is the zero\-value fallback.
+<a name="Unknown"></a>
 
 ```go
 const (

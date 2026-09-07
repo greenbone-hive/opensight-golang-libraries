@@ -8,8 +8,6 @@
 import "github.com/greenbone/opensight-golang-libraries/pkg/assets/identifier"
 ```
 
-Package identifier is the canonical asset\-identity claim taxonomy. Shared so discovery emits, and the identity / reconciliation engine and the sensor consume, ONE typed value set, instead of each service redefining the enum. The values are the exact snake\_case strings stored and matched on end to end: no per\-service translation. How strongly a claim weighs in a match is a consumer's policy, not part of the taxonomy, so it does not live here. Mirrors the provider package pattern.
-
 ## Index
 
 - [Variables](<#variables>)
@@ -19,7 +17,7 @@ Package identifier is the canonical asset\-identity claim taxonomy. Shared so di
 
 ## Variables
 
-<a name="All"></a>All is every claim\-type constant, for iteration and parity checks.
+<a name="All"></a>
 
 ```go
 var All = []Type{
@@ -35,24 +33,24 @@ var All = []Type{
 ```
 
 <a name="Valid"></a>
-## func [Valid](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/assets/identifier/identifier.go#L42>)
+## func [Valid](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/assets/identifier/identifier.go#L31>)
 
 ```go
 func Valid(t Type) bool
 ```
 
-Valid reports whether t is a known claim type.
+
 
 <a name="Type"></a>
-## type [Type](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/assets/identifier/identifier.go#L15>)
+## type [Type](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/assets/identifier/identifier.go#L7>)
 
-Type is a canonical asset\-identity claim type.
+
 
 ```go
 type Type string
 ```
 
-<a name="Hostname"></a>The canonical identity claim types, stored and matched as these exact strings.
+<a name="Hostname"></a>
 
 ```go
 const (

@@ -16,7 +16,7 @@ const (
 	AdapterProvider = "adapterProvider"
 	ResourceType    = "resourceType"
 	ResourceID      = "resourceId"
-	AccountID       = "accountId" // canonical scope FK (12-digit / sub GUID / projectId)
+	AccountID       = "accountId"
 	AccountName     = "accountName"
 	OrganizationID  = "organizationId"
 	Region          = "region"
@@ -40,15 +40,15 @@ const (
 	ARN                 = "arn"
 )
 
-// GCP-native aliases kept alongside the canonical envelope.
+// GCP-native aliases
 const (
 	ProjectID   = "projectId"
 	ProjectName = "projectName"
 )
 
-// Network core (phase 2): VirtualNetwork + Subnet.
+// Network cores
 const (
-	NetworkID           = "networkId" // Contains FK: subnet/NIC/... -> VirtualNetwork node id
+	NetworkID           = "networkId"
 	CidrBlocks          = "cidrBlocks"
 	IPv6CidrBlocks      = "ipv6CidrBlocks"
 	IsDefault           = "isDefault"
@@ -61,10 +61,6 @@ const (
 	AutoAssignPublicIP  = "autoAssignPublicIp"
 	PrivateGoogleAccess = "privateGoogleAccess"
 	Purpose             = "purpose"
-)
-
-// Network core (phase 2): RouteTable / NSG / NIC / NACL / ASG / PrefixList.
-const (
 	Kind                = "kind" // RouteTable: network | transit_hub (R10)
 	Routes              = "routes"
 	Rules               = "rules"

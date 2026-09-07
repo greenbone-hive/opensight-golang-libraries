@@ -8,8 +8,6 @@
 import "github.com/greenbone/opensight-golang-libraries/pkg/assets/assettype"
 ```
 
-Package assettype is the single source of the canonical asset types: the fixed, provider\-neutral type catalog plus each type's category. Callers write assettype.Organization. Categories live in the sibling assetcategory package; nothing here references a parent catalog.
-
 ## Index
 
 - [Variables](<#variables>)
@@ -20,7 +18,7 @@ Package assettype is the single source of the canonical asset types: the fixed, 
 
 ## Variables
 
-<a name="All"></a>All is every asset\-type constant, for iteration and parity checks.
+<a name="All"></a>
 
 ```go
 var All = []Type{
@@ -185,33 +183,33 @@ var All = []Type{
 ```
 
 <a name="CategoryOf"></a>
-## func [CategoryOf](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/assets/assettype/assettype.go#L505>)
+## func [CategoryOf](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/assets/assettype/assettype.go#L492>)
 
 ```go
 func CategoryOf(t Type) assetcategory.Category
 ```
 
-CategoryOf returns the category for a type, or assetcategory.Unknown if the type is not in the catalog.
+
 
 <a name="IsKnown"></a>
-## func [IsKnown](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/assets/assettype/assettype.go#L514>)
+## func [IsKnown](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/assets/assettype/assettype.go#L500>)
 
 ```go
 func IsKnown(t Type) bool
 ```
 
-IsKnown reports whether t is in the catalog.
+
 
 <a name="Type"></a>
-## type [Type](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/assets/assettype/assettype.go#L14>)
+## type [Type](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/assets/assettype/assettype.go#L9>)
 
-Type is a canonical, provider\-neutral asset type.
+
 
 ```go
 type Type string
 ```
 
-<a name="Unknown"></a>The canonical asset types. Unknown is the zero\-value fallback for a resource whose type has not been mapped.
+<a name="Unknown"></a>
 
 ```go
 const (
@@ -364,7 +362,6 @@ const (
     MigrationTask             Type = "MigrationTask"
     ReplicationConfiguration  Type = "ReplicationConfiguration"
 
-    // Crown-jewel plane additions (secrets/keys, backup, ML, integration).
     BackupVault          Type = "BackupVault"
     MlWorkspace          Type = "MlWorkspace"
     MlModel              Type = "MlModel"

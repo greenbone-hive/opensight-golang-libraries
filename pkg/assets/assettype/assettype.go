@@ -2,19 +2,12 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-// Package assettype is the single source of the canonical asset types: the
-// fixed, provider-neutral type catalog plus each type's category. Callers write
-// assettype.Organization. Categories live in the sibling assetcategory package;
-// nothing here references a parent catalog.
 package assettype
 
 import "github.com/greenbone/opensight-golang-libraries/pkg/assets/assetcategory"
 
-// Type is a canonical, provider-neutral asset type.
 type Type string
 
-// The canonical asset types. Unknown is the zero-value fallback for a resource
-// whose type has not been mapped.
 const (
 	Unknown                   Type = "Unknown"
 	Server                    Type = "Server"
@@ -165,7 +158,6 @@ const (
 	MigrationTask             Type = "MigrationTask"
 	ReplicationConfiguration  Type = "ReplicationConfiguration"
 
-	// Crown-jewel plane additions (secrets/keys, backup, ML, integration).
 	BackupVault          Type = "BackupVault"
 	MlWorkspace          Type = "MlWorkspace"
 	MlModel              Type = "MlModel"
@@ -177,7 +169,6 @@ const (
 	AppConfiguration     Type = "AppConfiguration"
 )
 
-// All is every asset-type constant, for iteration and parity checks.
 var All = []Type{
 	Unknown,
 	Server,
@@ -338,8 +329,6 @@ var All = []Type{
 	AppConfiguration,
 }
 
-// categoryByType maps each known type to its category (single source; keys are the
-// assettype constants, values the assetcategory constants).
 var categoryByType = map[Type]assetcategory.Category{
 	Unknown:                   assetcategory.Unknown,
 	Server:                    assetcategory.Compute,
@@ -500,8 +489,6 @@ var categoryByType = map[Type]assetcategory.Category{
 	AppConfiguration:          assetcategory.Integration,
 }
 
-// CategoryOf returns the category for a type, or assetcategory.Unknown if the
-// type is not in the catalog.
 func CategoryOf(t Type) assetcategory.Category {
 	if c, ok := categoryByType[t]; ok {
 		return c
@@ -510,5 +497,4 @@ func CategoryOf(t Type) assetcategory.Category {
 	return assetcategory.Unknown
 }
 
-// IsKnown reports whether t is in the catalog.
 func IsKnown(t Type) bool { _, ok := categoryByType[t]; return ok }
