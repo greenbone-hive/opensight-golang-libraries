@@ -80,13 +80,6 @@ const (
     AutoAssignPublicIP  = "autoAssignPublicIp"
     PrivateGoogleAccess = "privateGoogleAccess"
     Purpose             = "purpose"
-)
-```
-
-<a name="Kind"></a>Network core \(phase 2\): RouteTable / NSG / NIC / NACL / ASG / PrefixList.
-
-```go
-const (
     Kind                = "kind" // RouteTable: network | transit_hub (R10)
     Routes              = "routes"
     Rules               = "rules"
@@ -101,7 +94,7 @@ const (
     AttachedSubnetIDs   = "attachedSubnetIds"
     // ApplicationSecurityGroupIDs is a NIC's Azure ASG membership: the set of
     // applicationSecurityGroups its ipConfigurations belong to. It is what lets an
-    // NSG rule's asg: ref resolve to member NICs (phase-10 pass-0.5).
+    // NSG rule's asg: ref resolve to member NICs
     ApplicationSecurityGroupIDs = "applicationSecurityGroupIds"
     TargetTags                  = "targetTags"
     TargetServiceAccounts       = "targetServiceAccounts"
@@ -178,7 +171,7 @@ const (
 )
 ```
 
-<a name="LocalNetworkID"></a>Cross\-network connectivity: peering / transit hub / private link / VPN. Peering is NOT transitive; the transitivity\-gate fields are collected so the phase\-10 segment\-adjacency pass can decide, never assume a mesh.
+<a name="LocalNetworkID"></a>Cross\-network connectivity: peering / transit hub / private link / VPN. Peering is NOT transitive; the transitivity\-gate fields are collected so the segment\-adjacency pass can decide, never assume a mesh.
 
 ```go
 const (
@@ -204,16 +197,16 @@ const (
     TargetServiceID   = "targetServiceId" // PrivateLinkTo: the producer service
     PrivateDNSEnabled = "privateDnsEnabled"
     // VpcEndpointService / PrivateLinkService / ServiceAttachment (producer).
-    BackendLbID        = "backendLbId"        // Backs: the LB behind the service (phase 7)
+    BackendLbID        = "backendLbId"        // Backs: the LB behind the service
     AcceptanceRequired = "acceptanceRequired" // toxic: open producer when false
     AllowedConsumers   = "allowedConsumers"   // cross-tenant exposure
     // VpnGateway / VpnConnection.
     PublicIps        = "publicIps"    // VpnGateway -> Exposes
     GatewayID        = "gatewayId"    // ConnectsTo: VpnConnection -> VpnGateway
-    RemoteSiteID     = "remoteSiteId" // ConnectsTo: the on-prem site (phase 6)
+    RemoteSiteID     = "remoteSiteId" // ConnectsTo: the on-prem site
     StaticRoutesOnly = "staticRoutesOnly"
     TunnelCount      = "tunnelCount"
-    // Hybrid (phase 6): DedicatedCircuit + ClientVpnEndpoint. OnPremSite reuses
+    // Hybrid: DedicatedCircuit + ClientVpnEndpoint. OnPremSite reuses
     // publicIps/cidrBlocks/asn.
     Bandwidth              = "bandwidth"
     RemoteAsn              = "remoteAsn"              // DedicatedCircuit BGP peer ASN
@@ -236,9 +229,9 @@ const (
     WafPolicyID = "wafPolicyId" // reverse of Protects
     CdnEnabled  = "cdnEnabled"  // GCP Cloud CDN is a flag on the LB, not a node
     // LbListener.
-    LbID           = "lbId"           // HasListener: listener -> its load balancer
-    Port           = "port"           //
-    Protocol       = "protocol"       //
+    LbID           = "lbId" // HasListener: listener -> its load balancer
+    Port           = "port"
+    Protocol       = "protocol"
     CertificateIDs = "certificateIds" // TLS posture (CSPM)
     DefaultActions = "defaultActions" // ForwardsTo: {type, backendPoolId} per action
     // LbBackendPool.
@@ -255,12 +248,12 @@ const (
     // ApiGateway.
     Exposure         = "exposure"         // public | private (attack-entry class)
     VpcLinkTargetIDs = "vpcLinkTargetIds" // RoutesTraffic
-    CustomDomains    = "customDomains"    //
-    AuthorizerCount  = "authorizerCount"  // CSPM
+    CustomDomains    = "customDomains"
+    AuthorizerCount  = "authorizerCount" // CSPM
     // Cdn.
-    DomainNames     = "domainNames"     //
-    OriginHosts     = "originHosts"     // FrontsFor: LB | ObjectStorage | External
-    OriginIDs       = "originIds"       //
+    DomainNames     = "domainNames"
+    OriginHosts     = "originHosts" // FrontsFor: LB | ObjectStorage | External
+    OriginIDs       = "originIds"
     ViewerTLSPolicy = "viewerTlsPolicy" // CSPM
     // WafPolicy.
     Mode                = "mode"                // block | detect (CSPM)
@@ -269,7 +262,7 @@ const (
 )
 ```
 
-<a name="PublicNetworkAccess"></a>Phase\-8 data\-plane gates \(leaf/compute assets: DB, Storage, Cache, k8s\). These are producer\-emitted normalized fields that phase\-10 reachability reads as a SECOND ingress gate, independent of any NSG: a public endpoint is only reachable when its own allow\-list admits the peer. They are registered here AHEAD of the phase\-8 clients so the discovery bucket split routes them to Computed the moment a client emits one; an unregistered key would fall to Properties and be invisible to reachability \(a false\-negative public exposure\).
+<a name="PublicNetworkAccess"></a>Data\-plane gates \(leaf/compute assets: DB, Storage, Cache, k8s\). These are producer\-emitted normalized fields that reachability reads as a SECOND ingress gate, independent of any NSG: a public endpoint is only reachable when its own allow\-list admits the peer. They are registered here AHEAD of the clients that emit them so the discovery bucket split routes them to Computed the moment a client emits one; an unregistered key would fall to Properties and be invisible to reachability \(a false\-negative public exposure\).
 
 ```go
 const (
@@ -291,7 +284,7 @@ const (
 )
 ```
 
-<a name="PowerState"></a>Phase\-8 compute\-instance fields \(VirtualMachine and the workload leaves that carry an OS / identity / metadata surface\). Network placement rides the shared nicIds/subnetIds/securityGroupIds keys; these are the instance\-plane fields the graph and downstream \(vuln binding, IAM escalation, CSPM\) read.
+<a name="PowerState"></a>Compute\-instance fields \(VirtualMachine and the workload leaves that carry an OS / identity / metadata surface\). Network placement rides the shared nicIds/subnetIds/securityGroupIds keys; these are the instance\-plane fields the graph and downstream \(vuln binding, IAM escalation, CSPM\) read.
 
 ```go
 const (
@@ -343,7 +336,7 @@ const (
 )
 ```
 
-<a name="PublicURL"></a>Phase\-8 serverless fields \(ServerlessFunction: Lambda / Functions / Cloud Run, Cloud Functions\). Network placement rides subnetIds/securityGroupIds; these are the function\-plane fields the graph reads to decide direct internet entry.
+<a name="PublicURL"></a>Serverless fields \(ServerlessFunction: Lambda / Functions / Cloud Run, Cloud Functions\). Network placement rides subnetIds/securityGroupIds; these are the function\-plane fields the graph reads to decide direct internet entry.
 
 ```go
 const (
@@ -362,7 +355,7 @@ const (
 )
 ```
 
-<a name="IdentitySource"></a>IAM plane, phase 1 \(principals\) \- the AWS vertical slice's keys; later IAM phases grow this group the same way the network phases grew the ones above.
+<a name="IdentitySource"></a>IAM plane, principals \- the AWS vertical slice's keys; the group grows the same way the network groups above did, as more providers land.
 
 ```go
 const (
@@ -411,7 +404,7 @@ const (
 )
 ```
 
-<a name="ResourcePolicyGrants"></a>IAM plane, phase 7 \(resource\-attached bindings\) \- the AWS resource\-policy vertical slice's keys, on the ResourcePolicy sidecar node.
+<a name="ResourcePolicyGrants"></a>IAM plane, resource\-attached bindings \- the AWS resource\-policy vertical slice's keys, on the ResourcePolicy sidecar node.
 
 ```go
 const (
@@ -429,11 +422,11 @@ const (
     PolicyResourceID = "policyResourceId"
     // RoleID is the ResolvesTo FK on an AWS InstanceProfile node: the ARN of the
     // role currently attached to the profile (InstanceProfile -> ServicePrincipal),
-    // the second hop of the compute-attached-identity join (phase 8).
+    // the second hop of the compute-attached-identity join.
     RoleID = "roleId"
     // FederationType discriminates a SamlProvider/OidcProvider federation node:
     // "saml" | "oidc" (AWS/Azure external IdP) | "workload_identity" |
-    // "workload_identity_pool" | "workforce_identity_pool" (phase 6).
+    // "workload_identity_pool" | "workforce_identity_pool".
     FederationType = "federationType"
     // Issuer is the federation trust anchor's issuer - who may present a token:
     // an OIDC provider Url, a SAML metadata entityID, or a pool provider's issuer.
@@ -446,7 +439,7 @@ const (
     ThumbprintList = "thumbprintList"
     // PoolKind discriminates a federation pool/provider node's platform:
     // "gcp_workload_identity_pool" | "gcp_workforce_identity_pool" |
-    // "aws_cognito_identity_pool" (phase 6).
+    // "aws_cognito_identity_pool".
     PoolKind = "poolKind"
     // PoolID is the BelongsToPool FK on a GCP pool-provider node (SamlProvider/
     // OidcProvider, poolKind gcp_workload_identity_pool): the id of the parent
@@ -463,20 +456,20 @@ const (
     // AllowUnauthenticatedIdentities is true on an AWS Cognito Identity Pool
     // (WorkloadIdentityPool, poolKind aws_cognito_identity_pool) that lets an
     // anonymous caller assume an IAM role with no credential at all - a direct
-    // public reachability source (phase 6).
+    // public reachability source.
     AllowUnauthenticatedIdentities = "allowUnauthenticatedIdentities"
     // RoleTargets is an object array on an AWS Cognito Identity Pool: the roles the
     // pool federates identities into, one entry per default (authenticated/
     // unauthenticated) mapping plus one per rules-based mapping. Each entry:
-    // {mappingId, roleArn, requiresAuth, mappingType, provenance} (phase 6).
+    // {mappingId, roleArn, requiresAuth, mappingType, provenance}.
     RoleTargets = "roleTargets"
     // HasTokenBasedRoleMapping is true on an AWS Cognito Identity Pool that selects
     // the role from the caller's own token claims at credential time (RoleMapping
     // Type Token) - a caller-controlled target the collector cannot resolve ahead
-    // of time, flagged rather than silently dropped (phase 6).
+    // of time, flagged rather than silently dropped.
     HasTokenBasedRoleMapping = "hasTokenBasedRoleMapping"
 
-    // Azure IAM (phase 1/2/3). Tenant-composite ids are {tenantId}:{objId} (README
+    // Azure IAM. Tenant-composite ids are {tenantId}:{objId} (README
     // §2A1), so principal/role FKs below are collector-constructed in that form.
     // TenantID is the Azure tenant a node belongs to (the composite-id prefix).
     TenantID = "tenantId"
@@ -527,7 +520,7 @@ const (
     // OidcProvider (Graph identityProviders): the tenant that configured the trust.
     OwnerOrganizationID = "ownerOrganizationId"
     // IdentityProviderKind discriminates an IdentityProvider node's platform, e.g.
-    // "aws_cognito_user_pool" (phase 6).
+    // "aws_cognito_user_pool".
     IdentityProviderKind = "identityProviderKind"
     // AttachedIdpIds is the Trusts FK list on an AWS Cognito User Pool IdentityProvider:
     // the ids of its own IdpConfig children ({poolArn}#idp:{ProviderName}).
@@ -609,7 +602,7 @@ const (
     // checks it before any allow binding (GCP evaluates deny first).
     DenyRules = "denyRules"
 
-    // Secrets & key plane (phase 11). Graph-essential fields only; the fuller CSPM
+    // Secrets & key plane. Graph-essential fields only; the fuller CSPM
     // property surface (rotation, expiry, key spec) is deferred to a later pass.
     //
     // EncryptionKeyId is the customer-managed key id/ARN a resource is encrypted with:
@@ -945,13 +938,13 @@ var All = []string{
 ```
 
 <a name="IsCanonical"></a>
-## func [IsCanonical](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/assets/computed/computed.go#L935>)
+## func [IsCanonical](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/assets/computed/computed.go#L931>)
 
 ```go
 func IsCanonical(key string) bool
 ```
 
-IsCanonical reports whether key is a canonical topology field \(a member of All\). Discovery clients use it to split a flat property map into the two buckets: canonical keys go to Computed \(the topology contract\), everything else \- raw provider fields and not\-yet\-canonical derived values \- goes to Properties \(the raw bucket CSPM consumes later\). A field crosses into Computed simply by being given a computed.\* constant, so phase\-by\-phase property work never touches the split itself.
+IsCanonical reports whether key is a canonical topology field \(a member of All\). Discovery clients use it to split a flat property map into the two buckets: canonical keys go to Computed \(the topology contract\), everything else \- raw provider fields and not\-yet\-canonical derived values \- goes to Properties \(the raw bucket CSPM consumes later\). A field crosses into Computed simply by being given a computed.\* constant, so incremental property work never touches the split itself.
 
 Generated by [gomarkdoc](<https://github.com/princjef/gomarkdoc>)
 

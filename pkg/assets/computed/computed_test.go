@@ -36,12 +36,12 @@ func TestAllHasNoDuplicates(t *testing.T) {
 	}
 }
 
-// TestPhase8ReachabilityKeysRegistered pins the phase-8 data-plane gate fields as
+// TestDataPlaneGateKeysRegistered pins the data-plane gate fields as
 // canonical. If a producer emits one of these before it is in All, the discovery
-// bucket split silently routes it to Properties and phase-10 reachability cannot
+// bucket split silently routes it to Properties and reachability cannot
 // see a public endpoint's allow-list (a false-negative exposure). This test fails
 // the build if one is dropped from All.
-func TestPhase8ReachabilityKeysRegistered(t *testing.T) {
+func TestDataPlaneGateKeysRegistered(t *testing.T) {
 	required := []string{
 		PublicNetworkAccess,
 		AuthorizedCidrs,
@@ -51,12 +51,12 @@ func TestPhase8ReachabilityKeysRegistered(t *testing.T) {
 	}
 	for _, k := range required {
 		if !IsCanonical(k) {
-			t.Errorf("phase-8 reachability key %q is not canonical; register it in All before producers emit it", k)
+			t.Errorf("data-plane gate key %q is not canonical; register it in All before producers emit it", k)
 		}
 	}
 }
 
-// TestDerivedGraphFieldsAreNotCanonical proves the phase-10 engine's derived
+// TestDerivedGraphFieldsAreNotCanonical proves the exposure engine's derived
 // outputs are NOT in the producer contract, so a client that emits one by mistake
 // is routed to Properties instead of masquerading as a canonical field.
 func TestDerivedGraphFieldsAreNotCanonical(t *testing.T) {

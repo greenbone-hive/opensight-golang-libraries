@@ -6,8 +6,6 @@ package provider
 
 import "testing"
 
-// TestValid accepts exactly the supported providers and rejects anything else,
-// including the empty string and a near-miss casing.
 func TestValid(t *testing.T) {
 	for _, p := range All {
 		if !Valid(p) {
@@ -21,7 +19,6 @@ func TestValid(t *testing.T) {
 	}
 }
 
-// TestAllHasNoDuplicates guards against a copy-paste slip in All.
 func TestAllHasNoDuplicates(t *testing.T) {
 	seen := map[Provider]struct{}{}
 	for _, p := range All {

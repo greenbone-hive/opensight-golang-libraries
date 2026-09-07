@@ -8,10 +8,6 @@
 import "github.com/greenbone/opensight-golang-libraries/pkg/provider"
 ```
 
-Package provider is the canonical taxonomy of the systems assets are discovered from: what an adapter connects to, and where a resource lives. Shared so discovery, assets, and every other service key off one value set and one validation, instead of each redefining the enum.
-
-The set today is the three public clouds. It is not limited to them by design: on\-premises sources are part of the same discovery surface, and each becomes a constant here alongside the clouds rather than a separate parallel enum. Mirrors the assets taxonomy packages \(assettype / assetcategory / identifier / computed\).
-
 ## Index
 
 - [Variables](<#variables>)
@@ -21,37 +17,38 @@ The set today is the three public clouds. It is not limited to them by design: o
 
 ## Variables
 
-<a name="All"></a>All is every provider constant, for iteration and parity checks.
+<a name="All"></a>
 
 ```go
 var All = []Provider{AWS, Azure, GCP}
 ```
 
 <a name="Valid"></a>
-## func [Valid](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/provider/provider.go#L32>)
+## func [Valid](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/provider/provider.go#L18>)
 
 ```go
 func Valid(p Provider) bool
 ```
 
-Valid reports whether p is a known provider.
+
 
 <a name="Provider"></a>
-## type [Provider](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/provider/provider.go#L18>)
+## type [Provider](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/provider/provider.go#L7>)
 
-Provider is a canonical source of discovered assets.
+
 
 ```go
 type Provider string
 ```
 
-<a name="AWS"></a>The canonical providers, lowercase end to end; casing is a UI concern. Public clouds today; on\-premises sources join this block as they land.
+<a name="AWS"></a>
 
 ```go
 const (
-    AWS   Provider = "aws"
-    Azure Provider = "azure"
-    GCP   Provider = "gcp"
+    AWS          Provider = "aws"
+    Azure        Provider = "azure"
+    GCP          Provider = "gcp"
+    GB_APPLIANCE Provider = "greenbone_appliance"
 )
 ```
 

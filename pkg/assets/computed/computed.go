@@ -75,7 +75,7 @@ const (
 	AttachedSubnetIDs   = "attachedSubnetIds"
 	// ApplicationSecurityGroupIDs is a NIC's Azure ASG membership: the set of
 	// applicationSecurityGroups its ipConfigurations belong to. It is what lets an
-	// NSG rule's asg: ref resolve to member NICs (phase-10 pass-0.5).
+	// NSG rule's asg: ref resolve to member NICs
 	ApplicationSecurityGroupIDs = "applicationSecurityGroupIds"
 	TargetTags                  = "targetTags"
 	TargetServiceAccounts       = "targetServiceAccounts"
@@ -147,7 +147,7 @@ const (
 
 // Cross-network connectivity: peering / transit hub / private link /
 // VPN. Peering is NOT transitive; the transitivity-gate fields are collected so
-// the phase-10 segment-adjacency pass can decide, never assume a mesh.
+// the segment-adjacency pass can decide, never assume a mesh.
 const (
 	// VpcPeering.
 	LocalNetworkID        = "localNetworkId"  // PeersWith: the owning VirtualNetwork
@@ -171,16 +171,16 @@ const (
 	TargetServiceID   = "targetServiceId" // PrivateLinkTo: the producer service
 	PrivateDNSEnabled = "privateDnsEnabled"
 	// VpcEndpointService / PrivateLinkService / ServiceAttachment (producer).
-	BackendLbID        = "backendLbId"        // Backs: the LB behind the service (phase 7)
+	BackendLbID        = "backendLbId"        // Backs: the LB behind the service
 	AcceptanceRequired = "acceptanceRequired" // toxic: open producer when false
 	AllowedConsumers   = "allowedConsumers"   // cross-tenant exposure
 	// VpnGateway / VpnConnection.
 	PublicIps        = "publicIps"    // VpnGateway -> Exposes
 	GatewayID        = "gatewayId"    // ConnectsTo: VpnConnection -> VpnGateway
-	RemoteSiteID     = "remoteSiteId" // ConnectsTo: the on-prem site (phase 6)
+	RemoteSiteID     = "remoteSiteId" // ConnectsTo: the on-prem site
 	StaticRoutesOnly = "staticRoutesOnly"
 	TunnelCount      = "tunnelCount"
-	// Hybrid (phase 6): DedicatedCircuit + ClientVpnEndpoint. OnPremSite reuses
+	// Hybrid: DedicatedCircuit + ClientVpnEndpoint. OnPremSite reuses
 	// publicIps/cidrBlocks/asn.
 	Bandwidth              = "bandwidth"
 	RemoteAsn              = "remoteAsn"              // DedicatedCircuit BGP peer ASN
@@ -203,9 +203,9 @@ const (
 	WafPolicyID = "wafPolicyId" // reverse of Protects
 	CdnEnabled  = "cdnEnabled"  // GCP Cloud CDN is a flag on the LB, not a node
 	// LbListener.
-	LbID           = "lbId"           // HasListener: listener -> its load balancer
-	Port           = "port"           //
-	Protocol       = "protocol"       //
+	LbID           = "lbId" // HasListener: listener -> its load balancer
+	Port           = "port"
+	Protocol       = "protocol"
 	CertificateIDs = "certificateIds" // TLS posture (CSPM)
 	DefaultActions = "defaultActions" // ForwardsTo: {type, backendPoolId} per action
 	// LbBackendPool.
@@ -222,12 +222,12 @@ const (
 	// ApiGateway.
 	Exposure         = "exposure"         // public | private (attack-entry class)
 	VpcLinkTargetIDs = "vpcLinkTargetIds" // RoutesTraffic
-	CustomDomains    = "customDomains"    //
-	AuthorizerCount  = "authorizerCount"  // CSPM
+	CustomDomains    = "customDomains"
+	AuthorizerCount  = "authorizerCount" // CSPM
 	// Cdn.
-	DomainNames     = "domainNames"     //
-	OriginHosts     = "originHosts"     // FrontsFor: LB | ObjectStorage | External
-	OriginIDs       = "originIds"       //
+	DomainNames     = "domainNames"
+	OriginHosts     = "originHosts" // FrontsFor: LB | ObjectStorage | External
+	OriginIDs       = "originIds"
 	ViewerTLSPolicy = "viewerTlsPolicy" // CSPM
 	// WafPolicy.
 	Mode                = "mode"                // block | detect (CSPM)
@@ -235,11 +235,11 @@ const (
 	AttachedResourceIDs = "attachedResourceIds" // Protects: LB | AppGw | ApiGw | Cdn
 )
 
-// Phase-8 data-plane gates (leaf/compute assets: DB, Storage, Cache, k8s). These
-// are producer-emitted normalized fields that phase-10 reachability reads as a
+// Data-plane gates (leaf/compute assets: DB, Storage, Cache, k8s). These
+// are producer-emitted normalized fields that reachability reads as a
 // SECOND ingress gate, independent of any NSG: a public endpoint is only reachable
 // when its own allow-list admits the peer. They are registered here AHEAD of the
-// phase-8 clients so the discovery bucket split routes them to Computed the moment
+// clients that emit them so the discovery bucket split routes them to Computed the moment
 // a client emits one; an unregistered key would fall to Properties and be invisible
 // to reachability (a false-negative public exposure).
 const (
@@ -260,7 +260,7 @@ const (
 	PrivateNodes = "privateNodes"
 )
 
-// Phase-8 compute-instance fields (VirtualMachine and the workload leaves that
+// Compute-instance fields (VirtualMachine and the workload leaves that
 // carry an OS / identity / metadata surface). Network placement rides the shared
 // nicIds/subnetIds/securityGroupIds keys; these are the instance-plane fields the
 // graph and downstream (vuln binding, IAM escalation, CSPM) read.
@@ -312,7 +312,7 @@ const (
 	BucketID = "bucketId"
 )
 
-// Phase-8 serverless fields (ServerlessFunction: Lambda / Functions / Cloud Run,
+// Serverless fields (ServerlessFunction: Lambda / Functions / Cloud Run,
 // Cloud Functions). Network placement rides subnetIds/securityGroupIds; these are
 // the function-plane fields the graph reads to decide direct internet entry.
 const (
@@ -330,8 +330,8 @@ const (
 	Runtime = "runtime"
 )
 
-// IAM plane, phase 1 (principals) - the AWS vertical slice's keys; later IAM
-// phases grow this group the same way the network phases grew the ones above.
+// IAM plane, principals - the AWS vertical slice's keys; the group grows the
+// same way the network groups above did, as more providers land.
 const (
 	// IdentitySource discriminates sub-kinds under one canonical principal
 	// label (aws_iam_user | aws_sso_user | aws_iam_group | aws_sso_group | ...).
@@ -377,7 +377,7 @@ const (
 	AttachmentPointID = "attachmentPointId"
 )
 
-// IAM plane, phase 7 (resource-attached bindings) - the AWS resource-policy
+// IAM plane, resource-attached bindings - the AWS resource-policy
 // vertical slice's keys, on the ResourcePolicy sidecar node.
 const (
 	// ResourcePolicyGrants is an object array of parsed resource-based-policy
@@ -394,11 +394,11 @@ const (
 	PolicyResourceID = "policyResourceId"
 	// RoleID is the ResolvesTo FK on an AWS InstanceProfile node: the ARN of the
 	// role currently attached to the profile (InstanceProfile -> ServicePrincipal),
-	// the second hop of the compute-attached-identity join (phase 8).
+	// the second hop of the compute-attached-identity join.
 	RoleID = "roleId"
 	// FederationType discriminates a SamlProvider/OidcProvider federation node:
 	// "saml" | "oidc" (AWS/Azure external IdP) | "workload_identity" |
-	// "workload_identity_pool" | "workforce_identity_pool" (phase 6).
+	// "workload_identity_pool" | "workforce_identity_pool".
 	FederationType = "federationType"
 	// Issuer is the federation trust anchor's issuer - who may present a token:
 	// an OIDC provider Url, a SAML metadata entityID, or a pool provider's issuer.
@@ -411,7 +411,7 @@ const (
 	ThumbprintList = "thumbprintList"
 	// PoolKind discriminates a federation pool/provider node's platform:
 	// "gcp_workload_identity_pool" | "gcp_workforce_identity_pool" |
-	// "aws_cognito_identity_pool" (phase 6).
+	// "aws_cognito_identity_pool".
 	PoolKind = "poolKind"
 	// PoolID is the BelongsToPool FK on a GCP pool-provider node (SamlProvider/
 	// OidcProvider, poolKind gcp_workload_identity_pool): the id of the parent
@@ -428,20 +428,20 @@ const (
 	// AllowUnauthenticatedIdentities is true on an AWS Cognito Identity Pool
 	// (WorkloadIdentityPool, poolKind aws_cognito_identity_pool) that lets an
 	// anonymous caller assume an IAM role with no credential at all - a direct
-	// public reachability source (phase 6).
+	// public reachability source.
 	AllowUnauthenticatedIdentities = "allowUnauthenticatedIdentities"
 	// RoleTargets is an object array on an AWS Cognito Identity Pool: the roles the
 	// pool federates identities into, one entry per default (authenticated/
 	// unauthenticated) mapping plus one per rules-based mapping. Each entry:
-	// {mappingId, roleArn, requiresAuth, mappingType, provenance} (phase 6).
+	// {mappingId, roleArn, requiresAuth, mappingType, provenance}.
 	RoleTargets = "roleTargets"
 	// HasTokenBasedRoleMapping is true on an AWS Cognito Identity Pool that selects
 	// the role from the caller's own token claims at credential time (RoleMapping
 	// Type Token) - a caller-controlled target the collector cannot resolve ahead
-	// of time, flagged rather than silently dropped (phase 6).
+	// of time, flagged rather than silently dropped.
 	HasTokenBasedRoleMapping = "hasTokenBasedRoleMapping"
 
-	// Azure IAM (phase 1/2/3). Tenant-composite ids are {tenantId}:{objId} (README
+	// Azure IAM. Tenant-composite ids are {tenantId}:{objId} (README
 	// §2A1), so principal/role FKs below are collector-constructed in that form.
 	// TenantID is the Azure tenant a node belongs to (the composite-id prefix).
 	TenantID = "tenantId"
@@ -492,7 +492,7 @@ const (
 	// OidcProvider (Graph identityProviders): the tenant that configured the trust.
 	OwnerOrganizationID = "ownerOrganizationId"
 	// IdentityProviderKind discriminates an IdentityProvider node's platform, e.g.
-	// "aws_cognito_user_pool" (phase 6).
+	// "aws_cognito_user_pool".
 	IdentityProviderKind = "identityProviderKind"
 	// AttachedIdpIds is the Trusts FK list on an AWS Cognito User Pool IdentityProvider:
 	// the ids of its own IdpConfig children ({poolArn}#idp:{ProviderName}).
@@ -574,7 +574,7 @@ const (
 	// checks it before any allow binding (GCP evaluates deny first).
 	DenyRules = "denyRules"
 
-	// Secrets & key plane (phase 11). Graph-essential fields only; the fuller CSPM
+	// Secrets & key plane. Graph-essential fields only; the fuller CSPM
 	// property surface (rotation, expiry, key spec) is deferred to a later pass.
 	//
 	// EncryptionKeyId is the customer-managed key id/ARN a resource is encrypted with:
@@ -651,11 +651,11 @@ const (
 )
 
 // Derived reachability outputs (ingressAllowSet, effectiveInbound) are written
-// ONTO the graph by the exposure phase-10 engine and are deliberately NOT in this
+// ONTO the graph by the exposure engine and are deliberately NOT in this
 // registry: they are not a producer contract and a discovery client must never
 // emit them. Keeping them out of All means IsCanonical rejects them, so a client
 // that emits one by mistake routes it to Properties instead of masquerading as a
-// canonical field. See phase-10-reachability.md.
+// canonical field.
 
 // All is every canonical computed-field name, for the discovery->Computed
 // bucket routing and drift checks.
@@ -926,7 +926,7 @@ var keySet = func() map[string]struct{} {
 // buckets: canonical keys go to Computed (the topology contract), everything else
 // - raw provider fields and not-yet-canonical derived values - goes to Properties
 // (the raw bucket CSPM consumes later). A field crosses into Computed simply by
-// being given a computed.* constant, so phase-by-phase property work never
+// being given a computed.* constant, so incremental property work never
 // touches the split itself.
 func IsCanonical(key string) bool {
 	_, ok := keySet[key]
