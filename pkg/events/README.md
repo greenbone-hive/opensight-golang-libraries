@@ -2,11 +2,11 @@
 
 # events Package Documentation
 
-This package holds the typed event payloads services publish to each other, plus
-the subject names that identify them and the `Meta` envelope every event embeds.
-Producer and consumer compile against the same structs, so a renamed field or a
-changed shape is a build failure rather than a payload a consumer silently fails
-to parse.
+This package holds the discovery -> asset service event contract: the two event
+payloads, the subjects that name them, the `Meta` envelope every event embeds
+and the `Provenance` that identifies which scope run produced it. Producer and
+consumer compile against the same structs, so a renamed field is a build failure
+rather than a payload a consumer silently fails to parse.
 
 The package is transport-agnostic: it defines what an event *is*, not how it is
 delivered. Subjects are the logical event names; the bus owns whatever prefix it
@@ -56,170 +56,31 @@ Package events defines the platform's event schemas as format\-neutral Go struct
 ## Index
 
 - [Constants](<#constants>)
-- [type AssetBatchCompleted](<#AssetBatchCompleted>)
-- [type AssetEvent](<#AssetEvent>)
-- [type AssetSnapshot](<#AssetSnapshot>)
-- [type AuditRecorded](<#AuditRecorded>)
-- [type ChangeCounts](<#ChangeCounts>)
 - [type CollectorCoverage](<#CollectorCoverage>)
 - [type CoverageStatus](<#CoverageStatus>)
 - [type DiscoveryScopeRetired](<#DiscoveryScopeRetired>)
   - [func \(e \*DiscoveryScopeRetired\) Validate\(\) error](<#DiscoveryScopeRetired.Validate>)
 - [type DiscoverySnapshotCompleted](<#DiscoverySnapshotCompleted>)
   - [func \(e \*DiscoverySnapshotCompleted\) Validate\(\) error](<#DiscoverySnapshotCompleted.Validate>)
-- [type FindingCreated](<#FindingCreated>)
-- [type FindingResolved](<#FindingResolved>)
-- [type InventoryCounts](<#InventoryCounts>)
-- [type InventoryEvent](<#InventoryEvent>)
-- [type InventoryIdentity](<#InventoryIdentity>)
-- [type InventorySnapshotCreated](<#InventorySnapshotCreated>)
 - [type LifecycleReason](<#LifecycleReason>)
   - [func \(r LifecycleReason\) IsProviderDeletion\(\) bool](<#LifecycleReason.IsProviderDeletion>)
   - [func \(r LifecycleReason\) RetiresClaim\(\) bool](<#LifecycleReason.RetiresClaim>)
 - [type Meta](<#Meta>)
   - [func \(m \*Meta\) Key\(\) string](<#Meta.Key>)
-- [type MisconfigurationEvent](<#MisconfigurationEvent>)
 - [type Provenance](<#Provenance>)
   - [func \(p \*Provenance\) PartitionKey\(\) string](<#Provenance.PartitionKey>)
-- [type Severity](<#Severity>)
 - [type SnapshotResource](<#SnapshotResource>)
-- [type VulnerabilityEvent](<#VulnerabilityEvent>)
 
 
 ## Constants
 
-<a name="SubjectAuditRecorded"></a>Event subjects: the logical event types. They are not the wire names; the bus owns the prefix it puts in front of them.
+<a name="SubjectDiscoverySnapshotCompleted"></a>Event subjects: the logical event types. They are not the wire names; the bus owns the prefix it puts in front of them.
 
 ```go
 const (
-    SubjectAuditRecorded = "audit.recorded"
-
-    // Asset lifecycle (assets registry -> topology and other consumers).
-    SubjectAssetAdded   = "asset.added"
-    SubjectAssetChanged = "asset.changed"
-    SubjectAssetRemoved = "asset.removed"
-
-    // Vulnerability finding lifecycle (vulnerability service -> topology).
-    SubjectVulnerabilityReported = "vulnerability.reported"
-    SubjectVulnerabilityChanged  = "vulnerability.changed"
-    SubjectVulnerabilityClosed   = "vulnerability.closed"
-
-    // Misconfiguration finding lifecycle (posture service -> topology).
-    SubjectMisconfigurationReported = "misconfiguration.reported"
-    SubjectMisconfigurationChanged  = "misconfiguration.changed"
-    SubjectMisconfigurationClosed   = "misconfiguration.closed"
-
-    // Inventory lifecycle (inventory service -> topology).
-    SubjectInventoryAdded   = "inventory.added"
-    SubjectInventoryChanged = "inventory.changed"
-    SubjectInventoryClosed  = "inventory.closed"
-
-    SubjectSensorBound     = "sensor.bound"
-    SubjectSensorHeartbeat = "sensor.heartbeat"
-    SubjectSensorData      = "sensor.data"
-
-    SubjectSensorDeployRequested = "sensor.deploy.requested"
-    SubjectSensorDeployCompleted = "sensor.deploy.completed"
-
-    SubjectInventorySnapshotCreated = "inventory.snapshot.created"
-
-    SubjectFindingCreated  = "finding.created"
-    SubjectFindingResolved = "finding.resolved"
-
-    SubjectVulnerabilityCorrelated = "vulnerability.correlated"
-
     SubjectDiscoverySnapshotCompleted = "discovery.snapshot.completed"
     SubjectDiscoveryScopeRetired      = "discovery.scope.retired"
-    SubjectAdapterChanged             = "adapter.changed"
-
-    // Batch boundary (assets -> exposure): all per-asset events of one applied
-    // discovery scope-run batch have been published.
-    SubjectAssetBatchCompleted = "asset.batch.completed"
-
-    SubjectFeedUpdated = "feed.updated"
-
-    SubjectScanRequested = "scan.requested"
-
-    SubjectExposureProjectionDirty    = "exposure.projection.dirty"
-    SubjectExposureReprojectRequested = "exposure.reproject.requested"
-    SubjectExposureAttackPathComputed = "exposure.attackpath.computed"
 )
-```
-
-<a name="AssetBatchCompleted"></a>
-## type [AssetBatchCompleted](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/events.go#L73-L79>)
-
-AssetBatchCompleted is published by assets after it finishes applying one discovery scope\-run snapshot \(all per\-asset events of that batch precede it\). Exposure uses it to run the structural rule pass once per completed batch at a real producer scan boundary instead of per asset event. It carries the originating scope\-run provenance and coverage verdict verbatim. EntityID is Provenance.PartitionKey\(\); Version mirrors the consumed snapshot's version.
-
-```go
-type AssetBatchCompleted struct {
-    Meta
-    Provenance
-    Coverage   CoverageStatus      `json:"coverage"`
-    Collectors []CollectorCoverage `json:"collectors,omitempty"`
-    Counts     ChangeCounts        `json:"counts"`
-}
-```
-
-<a name="AssetEvent"></a>
-## type [AssetEvent](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/events.go#L60-L65>)
-
-AssetEvent is the asset lifecycle payload, published by assets under asset.added / asset.changed / asset.removed. A removed event carries the last known snapshot so consumers can tear down derived state \(e.g. the topology node\) without a lookup. \(entity\_id = asset id; version orders per asset.\)
-
-Graph identity downstream is \(provider, resourceId\). Scope is the discovery observation that caused this change \(nil for manual/agent\-sourced changes\). Reason is set on asset.removed to say why \(provider deletion vs claim retirement\).
-
-```go
-type AssetEvent struct {
-    Meta
-    Asset  AssetSnapshot   `json:"asset"`
-    Reason LifecycleReason `json:"reason,omitempty"`
-    Scope  *Provenance     `json:"scope,omitempty"`
-}
-```
-
-<a name="AssetSnapshot"></a>
-## type [AssetSnapshot](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/events.go#L41-L49>)
-
-AssetSnapshot is the asset content an asset lifecycle event carries inline: enough for the topology graph\-build \(node identity, canonical labels, and the computed FK fields\) without a pull. Computed holds the canonical topology fields \(assets/computed keys\); it is empty for assets with no cloud envelope \(e.g. manually registered ones\).
-
-```go
-type AssetSnapshot struct {
-    AssetID       string         `json:"asset_id"`
-    Name          string         `json:"name"`
-    AssetType     string         `json:"asset_type"`
-    AssetCategory string         `json:"asset_category"`
-    Provider      string         `json:"provider,omitempty"`
-    Status        string         `json:"status"`
-    Computed      map[string]any `json:"computed,omitempty"`
-}
-```
-
-<a name="AuditRecorded"></a>
-## type [AuditRecorded](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/events.go#L28-L34>)
-
-AuditRecorded is published by every service for each user operation; consumed only by the audit service. Fire\-and\-forget — it never blocks the operation.
-
-```go
-type AuditRecorded struct {
-    Meta
-    ActorID    string         `json:"actor_id"`
-    Action     string         `json:"action"`
-    EntityType string         `json:"entity_type"`
-    Metadata   map[string]any `json:"metadata,omitempty"`
-}
-```
-
-<a name="ChangeCounts"></a>
-## type [ChangeCounts](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/events.go#L222-L226>)
-
-ChangeCounts is the roll\-up summary of an asset batch apply, computed by the assets service from its own reconciliation result.
-
-```go
-type ChangeCounts struct {
-    Added   int `json:"added"`
-    Changed int `json:"changed"`
-    Removed int `json:"removed"`
-}
 ```
 
 <a name="CollectorCoverage"></a>
@@ -262,7 +123,7 @@ const (
 ```
 
 <a name="DiscoveryScopeRetired"></a>
-## type [DiscoveryScopeRetired](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/events.go#L214-L218>)
+## type [DiscoveryScopeRetired](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/events.go#L55-L59>)
 
 DiscoveryScopeRetired is emitted by discovery when a target partition leaves a connection's coverage for a control\-plane reason: the operator excluded it, the connection was deleted, or hierarchy reconciliation found the target moved or closed. Consumers retire the partition's source claims with the carried reason; it never asserts provider deletion \(see LifecycleReason\). EntityID is Provenance.PartitionKey\(\); Version continues the partition's monotonic sequence.
 
@@ -284,7 +145,7 @@ func (e *DiscoveryScopeRetired) Validate() error
 Validate enforces the retirement contract: complete provenance, partition ordering key, and a reason that actually retires claims. resource\_deleted travels per\-resource in snapshot diffs and authorization\_lost never retires.
 
 <a name="DiscoverySnapshotCompleted"></a>
-## type [DiscoverySnapshotCompleted](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/events.go#L188-L196>)
+## type [DiscoverySnapshotCompleted](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/events.go#L29-L37>)
 
 DiscoverySnapshotCompleted is emitted by discovery after every scope run and pushed to the assets service with the partition's COMPLETE live resource set inline. Discovery computes no diff and keeps no resource state: the consumer owns reconciliation, diffing the snapshot against its own previous state.
 
@@ -312,98 +173,6 @@ func (e *DiscoverySnapshotCompleted) Validate() error
 ```
 
 Validate enforces the snapshot contract: complete provenance, the partition ordering key, and per\-resource identity. The absence safety rule \(only a complete snapshot asserts deletions\) cannot be validated here because absence is implicit; consumers MUST gate their reap on Coverage == complete.
-
-<a name="FindingCreated"></a>
-## type [FindingCreated](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/events.go#L154-L163>)
-
-FindingCreated is published by posture or vulnerability when a finding is raised. Carries the display fields needed to build a ticket \(claim\-check is unnecessary for these small fields\).
-
-```go
-type FindingCreated struct {
-    Meta
-    FindingID string   `json:"finding_id"`
-    AssetID   string   `json:"asset_id"`
-    AssetName string   `json:"asset_name"`
-    RuleID    string   `json:"rule_id,omitempty"`
-    CVEID     string   `json:"cve_id,omitempty"`
-    Title     string   `json:"title"`
-    Severity  Severity `json:"severity"`
-}
-```
-
-<a name="FindingResolved"></a>
-## type [FindingResolved](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/events.go#L166-L170>)
-
-FindingResolved is published when a finding is resolved or risk\-accepted.
-
-```go
-type FindingResolved struct {
-    Meta
-    FindingID string `json:"finding_id"`
-    AssetID   string `json:"asset_id"`
-}
-```
-
-<a name="InventoryCounts"></a>
-## type [InventoryCounts](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/events.go#L135-L140>)
-
-InventoryCounts summarises the magnitude of an inventory snapshot's changes.
-
-```go
-type InventoryCounts struct {
-    Total   int `json:"total"`
-    Added   int `json:"added"`
-    Updated int `json:"updated"`
-    Removed int `json:"removed"`
-}
-```
-
-<a name="InventoryEvent"></a>
-## type [InventoryEvent](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/events.go#L110-L115>)
-
-InventoryEvent is the inventory lifecycle payload, published under inventory.added / inventory.changed / inventory.closed. \(entity\_id = asset id.\)
-
-```go
-type InventoryEvent struct {
-    Meta
-    AssetID string          `json:"asset_id"`
-    Dataset string          `json:"dataset,omitempty"`
-    Counts  InventoryCounts `json:"counts,omitempty"`
-}
-```
-
-<a name="InventoryIdentity"></a>
-## type [InventoryIdentity](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/events.go#L143-L149>)
-
-InventoryIdentity is the small identity slice inlined into the snapshot event.
-
-```go
-type InventoryIdentity struct {
-    Hostname string   `json:"hostname,omitempty"`
-    FQDN     string   `json:"fqdn,omitempty"`
-    Serial   string   `json:"serial,omitempty"`
-    MAC      string   `json:"mac,omitempty"`
-    IPs      []string `json:"ips,omitempty"`
-}
-```
-
-<a name="InventorySnapshotCreated"></a>
-## type [InventorySnapshotCreated](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/events.go#L123-L132>)
-
-InventorySnapshotCreated is published by the inventory service when a sensor submission changes an asset's inventory \(diff\-based: an unchanged submission publishes nothing\). It carries a small identity subset inline so the assets service can reconcile without a pull; the bulk record list stays in ClickHouse and is pulled by RunID via the claim\-check endpoint \(ADR\-013\). \(entity\_id = asset id; version orders snapshots per asset.\)
-
-```go
-type InventorySnapshotCreated struct {
-    Meta
-    AssetID         string            `json:"asset_id"`
-    AgentID         string            `json:"agent_id"`
-    RunID           string            `json:"run_id"`
-    SyncType        string            `json:"sync_type"` // "full" | "delta"
-    ChangedDatasets []string          `json:"changed_datasets"`
-    Counts          InventoryCounts   `json:"counts"`
-    Identity        InventoryIdentity `json:"identity"`
-}
-```
 
 <a name="LifecycleReason"></a>
 ## type [LifecycleReason](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/provenance.go#L34>)
@@ -483,23 +252,6 @@ func (m *Meta) Key() string
 
 Key returns the idempotency/ordering key for the event. Consumers store the highest processed Version per EntityID and ignore anything not newer.
 
-<a name="MisconfigurationEvent"></a>
-## type [MisconfigurationEvent](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/events.go#L97-L105>)
-
-MisconfigurationEvent is the misconfiguration finding lifecycle payload, published under misconfiguration.reported / misconfiguration.changed / misconfiguration.closed. \(entity\_id = finding id.\)
-
-```go
-type MisconfigurationEvent struct {
-    Meta
-    FindingID string   `json:"finding_id"`
-    AssetID   string   `json:"asset_id"`
-    RuleID    string   `json:"rule_id,omitempty"`
-    Title     string   `json:"title,omitempty"`
-    Severity  Severity `json:"severity,omitempty"`
-    Status    string   `json:"status,omitempty"`
-}
-```
-
 <a name="Provenance"></a>
 ## type [Provenance](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/provenance.go#L84-L91>)
 
@@ -527,29 +279,8 @@ func (p *Provenance) PartitionKey() string
 
 PartitionKey is the event\-stream identity of one target partition. Events for one partition are ordered by a per\-partition monotonic Meta.Version; events for different partitions are independent and must never gate each other. Producers of partitioned events MUST set Meta.EntityID to this key.
 
-<a name="Severity"></a>
-## type [Severity](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/events.go#L15>)
-
-Severity is a finding/vulnerability severity level.
-
-```go
-type Severity string
-```
-
-<a name="SeverityCritical"></a>Severity levels, highest to lowest.
-
-```go
-const (
-    SeverityCritical Severity = "critical"
-    SeverityHigh     Severity = "high"
-    SeverityMedium   Severity = "medium"
-    SeverityLow      Severity = "low"
-    SeverityInfo     Severity = "info"
-)
-```
-
 <a name="SnapshotResource"></a>
-## type [SnapshotResource](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/events.go#L201-L205>)
+## type [SnapshotResource](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/events.go#L42-L46>)
 
 SnapshotResource is one live resource in a discovery snapshot: its identity within the partition plus the marshaled resource body \(name, resourceName, assetType, computed, tags, identifiers\).
 
@@ -558,23 +289,6 @@ type SnapshotResource struct {
     Type               string          `json:"type"`
     ProviderResourceID string          `json:"provider_resource_id"`
     Body               json.RawMessage `json:"body"`
-}
-```
-
-<a name="VulnerabilityEvent"></a>
-## type [VulnerabilityEvent](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/events.go#L84-L92>)
-
-VulnerabilityEvent is the vulnerability finding lifecycle payload, published under vulnerability.reported / vulnerability.changed / vulnerability.closed. \(entity\_id = finding id.\)
-
-```go
-type VulnerabilityEvent struct {
-    Meta
-    FindingID string   `json:"finding_id"`
-    AssetID   string   `json:"asset_id"`
-    CVEID     string   `json:"cve_id,omitempty"`
-    Title     string   `json:"title,omitempty"`
-    Severity  Severity `json:"severity,omitempty"`
-    Status    string   `json:"status,omitempty"`
 }
 ```
 

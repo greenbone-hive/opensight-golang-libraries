@@ -189,42 +189,4 @@ func TestProvenanceJSONRoundTrip(t *testing.T) {
 	if err := out.Validate(); err != nil {
 		t.Fatalf("round-tripped snapshot invalid: %v", err)
 	}
-
-	scope := in.Provenance
-	ae := AssetEvent{
-		Meta:   Meta{EntityID: "asset-1", Version: 4, Type: SubjectAssetRemoved},
-		Asset:  AssetSnapshot{AssetID: "asset-1", Provider: "aws", Status: "removed"},
-		Reason: ReasonResourceDeleted,
-		Scope:  &scope,
-	}
-	data, err = json.Marshal(ae)
-	if err != nil {
-		t.Fatalf("marshal asset event: %v", err)
-	}
-	var aeOut AssetEvent
-	if err := json.Unmarshal(data, &aeOut); err != nil {
-		t.Fatalf("unmarshal asset event: %v", err)
-	}
-	if aeOut.Reason != ReasonResourceDeleted || aeOut.Scope == nil ||
-		aeOut.Scope.TargetScopeID != "111111111111" {
-		t.Fatalf("asset event provenance not round-tripped: %+v", aeOut)
-	}
-
-	batch := AssetBatchCompleted{
-		Meta:       Meta{EntityID: scope.PartitionKey(), Version: 6, Type: SubjectAssetBatchCompleted},
-		Provenance: scope,
-		Coverage:   CoverageComplete,
-		Counts:     ChangeCounts{Added: 1},
-	}
-	data, err = json.Marshal(batch)
-	if err != nil {
-		t.Fatalf("marshal batch: %v", err)
-	}
-	var batchOut AssetBatchCompleted
-	if err := json.Unmarshal(data, &batchOut); err != nil {
-		t.Fatalf("unmarshal batch: %v", err)
-	}
-	if batchOut.Provenance != scope || batchOut.Coverage != CoverageComplete {
-		t.Fatalf("batch provenance not round-tripped: %+v", batchOut)
-	}
 }
