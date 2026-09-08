@@ -55,7 +55,7 @@ const (
 
 // RetiresClaim reports whether the reason retires a source claim. Authorization
 // loss keeps the claim (coverage goes stale instead), and resource deletion is
-// carried per-resource by snapshot diffs, not by a scope retirement.
+// carried per-resource by scan diffs, not by a scope retirement.
 func (r LifecycleReason) RetiresClaim() bool {
 	switch r {
 	case ReasonScopeExcluded, ReasonConnectionDeleted, ReasonTargetMoved, ReasonTargetClosed:
@@ -120,26 +120,26 @@ type CollectorCoverage struct {
 	Error          string         `json:"error,omitempty"`
 }
 
-// Validate enforces the snapshot contract: complete provenance, the partition
+// Validate enforces the scan contract: complete provenance, the partition
 // ordering key, and per-resource identity. The absence safety rule (only a
-// complete snapshot asserts deletions) cannot be validated here because absence
+// complete scan asserts deletions) cannot be validated here because absence
 // is implicit; consumers MUST gate their reap on Coverage == complete.
-func (e *SnapshotCompleted) Validate() error {
+func (e *ScanCompleted) Validate() error {
 	if err := e.validate(); err != nil {
 		return err
 	}
 	if e.RunID == "" || e.ScopeRunID == "" {
-		return errors.New("discovery: discovery snapshot missing run/scope-run id")
+		return errors.New("discovery: discovery scan missing run/scope-run id")
 	}
 	if e.EntityID != e.PartitionKey() {
-		return fmt.Errorf("discovery: discovery snapshot entity_id %q must be the partition key %q", e.EntityID, e.PartitionKey())
+		return fmt.Errorf("discovery: discovery scan entity_id %q must be the partition key %q", e.EntityID, e.PartitionKey())
 	}
 	if e.Version <= 0 {
-		return errors.New("discovery: discovery snapshot needs a positive per-partition version")
+		return errors.New("discovery: discovery scan needs a positive per-partition version")
 	}
 	for i := range e.Resources {
 		if e.Resources[i].Type == "" || e.Resources[i].ProviderResourceID == "" {
-			return fmt.Errorf("discovery: discovery snapshot resource %d missing type or provider_resource_id", i)
+			return fmt.Errorf("discovery: discovery scan resource %d missing type or provider_resource_id", i)
 		}
 	}
 
@@ -148,7 +148,7 @@ func (e *SnapshotCompleted) Validate() error {
 
 // Validate enforces the retirement contract: complete provenance, partition
 // ordering key, and a reason that actually retires claims. resource_deleted
-// travels per-resource in snapshot diffs and authorization_lost never retires.
+// travels per-resource in scan diffs and authorization_lost never retires.
 func (e *ScopeRetired) Validate() error {
 	if err := e.validate(); err != nil {
 		return err

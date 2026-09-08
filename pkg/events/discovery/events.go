@@ -5,7 +5,7 @@
 // Package discovery is the discovery -> asset service event contract: the two
 // payloads discovery pushes, the subjects that name them, and the Provenance
 // that says which observation produced them. Each event embeds events.Meta and
-// Provenance; the snapshot carries its full resource set inline so the consumer
+// Provenance; the scan carries its full resource set inline so the consumer
 // can reconcile on its own.
 package discovery
 
@@ -15,36 +15,36 @@ import (
 	"github.com/greenbone/opensight-golang-libraries/pkg/events"
 )
 
-// SnapshotCompleted is emitted by discovery after every scope run and
+// ScanCompleted is emitted by discovery after every scope run and
 // pushed to the assets service with the partition's COMPLETE live resource set
 // inline. Discovery computes no diff and keeps no resource state: the consumer
-// owns reconciliation, diffing the snapshot against its own previous state.
+// owns reconciliation, diffing the scan against its own previous state.
 //
 // Absence semantics: a resource missing from Resources is a deletion assertion
-// ONLY when Coverage is complete. A partial/failed snapshot says nothing about
+// ONLY when Coverage is complete. A partial/failed scan says nothing about
 // absence (a failed collector's resources are simply missing), so consumers
 // MUST apply it upsert-only and never reap on it. Scope exclusion, connection
 // deletion and target moves/closures are NOT absences; they travel as
 // ScopeRetired with their own reason.
 //
 // Ordering: EntityID is Provenance.PartitionKey() and Version is monotonic per
-// partition (the scope-run sequence, never a timestamp), so snapshots of
+// partition (the scope-run sequence, never a timestamp), so scans of
 // different targets are ordered independently and may arrive in any order
 // without gating each other.
-type SnapshotCompleted struct {
+type ScanCompleted struct {
 	events.Meta
 	Provenance
 	Account       string              `json:"account"`
 	TriggerSource string              `json:"trigger_source"`
 	Coverage      CoverageStatus      `json:"coverage"`
 	Collectors    []CollectorCoverage `json:"collectors,omitempty"`
-	Resources     []SnapshotResource  `json:"resources"`
+	Resources     []ObservedResource  `json:"resources"`
 }
 
-// SnapshotResource is one live resource in a discovery snapshot: its identity
+// ObservedResource is one live resource a scan observed: its identity
 // within the partition plus the marshaled resource body (name, resourceName,
 // assetType, computed, tags, identifiers).
-type SnapshotResource struct {
+type ObservedResource struct {
 	Type               string          `json:"type"`
 	ProviderResourceID string          `json:"provider_resource_id"`
 	Body               json.RawMessage `json:"body"`

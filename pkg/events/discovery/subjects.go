@@ -7,6 +7,6 @@ package discovery
 // Event subjects: the logical event types. They are not the wire names; the bus
 // owns the prefix it puts in front of them.
 const (
-	SubjectSnapshotCompleted = "discovery.snapshot.completed"
-	SubjectScopeRetired      = "discovery.scope.retired"
+	SubjectScanCompleted = "discovery.scan.completed"
+	SubjectScopeRetired  = "discovery.scope.retired"
 )

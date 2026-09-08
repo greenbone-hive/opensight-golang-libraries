@@ -10,7 +10,7 @@ deliveries.
 The payloads live in the subpackages, one per producer-consumer contract.
 
 Subpackages:
-* [discovery](discovery/README.md) - the discovery to asset service contract: the snapshot and retirement payloads
+* [discovery](discovery/README.md) - the discovery to asset service contract: the scan and retirement payloads
 
 ---
 
@@ -37,12 +37,12 @@ Package events holds the envelope every event carries, whatever contract it belo
 
 Meta is the common metadata embedded in every event. EntityID and Version form the idempotency/ordering key consumers use to drop duplicate or out\-of\-order events.
 
-Ordering is strictly per EntityID stream: streams never gate each other. Partitioned events \(a discovery snapshot or retirement, say\) use Provenance.PartitionKey\(\) as EntityID with a per\-partition monotonic sequence as Version, never a timestamp, which cannot order parallel producers of one partition.
+Ordering is strictly per EntityID stream: streams never gate each other. Partitioned events \(a discovery scan or retirement, say\) use Provenance.PartitionKey\(\) as EntityID with a per\-partition monotonic sequence as Version, never a timestamp, which cannot order parallel producers of one partition.
 
 ```go
 type Meta struct {
     ID       string    `json:"id"`        // unique event id
-    Type     string    `json:"type"`      // subject, e.g. "discovery.snapshot.completed"
+    Type     string    `json:"type"`      // subject, e.g. "discovery.scan.completed"
     Source   string    `json:"source"`    // publishing service
     Time     time.Time `json:"time"`      // occurred-at (UTC)
     EntityID string    `json:"entity_id"` // idempotency/ordering key

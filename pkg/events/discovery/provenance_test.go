@@ -12,15 +12,15 @@ import (
 	"github.com/greenbone/opensight-golang-libraries/pkg/events"
 )
 
-func snapshot(target string, version int64, coverage CoverageStatus, resources ...SnapshotResource) SnapshotCompleted {
+func scan(target string, version int64, coverage CoverageStatus, resources ...ObservedResource) ScanCompleted {
 	p := Provenance{
 		ConnectionID: "conn-1", ConnectionRevision: 2,
 		TargetScopeID: target, RunID: "10", ScopeRunID: "77", Provider: "aws",
 	}
 
-	return SnapshotCompleted{
+	return ScanCompleted{
 		Meta: events.Meta{
-			ID: "evt", Type: SubjectSnapshotCompleted, Source: "discovery",
+			ID: "evt", Type: SubjectScanCompleted, Source: "discovery",
 			EntityID: p.PartitionKey(), Version: version,
 		},
 		Provenance: p,
@@ -34,8 +34,8 @@ func snapshot(target string, version int64, coverage CoverageStatus, resources .
 // neither event's (entity_id, version) guard can drop the other, in any
 // delivery order.
 func TestTargetPartitionsOrderIndependently(t *testing.T) {
-	a := snapshot("111111111111", 5, CoverageComplete)
-	b := snapshot("222222222222", 3, CoverageComplete)
+	a := scan("111111111111", 5, CoverageComplete)
+	b := scan("222222222222", 3, CoverageComplete)
 
 	if a.EntityID == b.EntityID {
 		t.Fatalf("partitions share entity id %q; one target would gate the other", a.EntityID)
@@ -56,55 +56,55 @@ func TestTargetPartitionsOrderIndependently(t *testing.T) {
 // Duplicate delivery of one partition event yields the identical idempotency
 // key, so a consumer's high-water mark drops it exactly once.
 func TestDuplicateDeliverySameKey(t *testing.T) {
-	a := snapshot("111111111111", 5, CoverageComplete)
-	dup := snapshot("111111111111", 5, CoverageComplete)
+	a := scan("111111111111", 5, CoverageComplete)
+	dup := scan("111111111111", 5, CoverageComplete)
 	if a.Key() != dup.Key() {
 		t.Fatalf("duplicate delivery changed key: %q vs %q", a.Key(), dup.Key())
 	}
 }
 
-// Every inline resource must carry its identity; an empty snapshot is legal
+// Every inline resource must carry its identity; an empty scan is legal
 // (a partition can genuinely hold zero resources).
-func TestSnapshotResourceIdentityRequired(t *testing.T) {
-	empty := snapshot("111111111111", 6, CoverageComplete)
+func TestScanResourceIdentityRequired(t *testing.T) {
+	empty := scan("111111111111", 6, CoverageComplete)
 	if err := empty.Validate(); err != nil {
-		t.Fatalf("empty snapshot rejected: %v", err)
+		t.Fatalf("empty scan rejected: %v", err)
 	}
 
-	e := snapshot("111111111111", 6, CoverageComplete,
-		SnapshotResource{Type: "AWS::EC2::VPC", ProviderResourceID: "vpc-1"},
-		SnapshotResource{Type: "", ProviderResourceID: "vpc-2"})
+	e := scan("111111111111", 6, CoverageComplete,
+		ObservedResource{Type: "AWS::EC2::VPC", ProviderResourceID: "vpc-1"},
+		ObservedResource{Type: "", ProviderResourceID: "vpc-2"})
 	err := e.Validate()
 	if err == nil || !strings.Contains(err.Error(), "missing type or provider_resource_id") {
 		t.Fatalf("identity-less resource validated: %v", err)
 	}
 }
 
-// The snapshot entity id must be the partition key, and versions must be
+// The scan entity id must be the partition key, and versions must be
 // positive per-partition sequences.
-func TestSnapshotOrderingContract(t *testing.T) {
-	e := snapshot("111111111111", 6, CoverageComplete)
+func TestScanOrderingContract(t *testing.T) {
+	e := scan("111111111111", 6, CoverageComplete)
 	e.EntityID = "conn-1" // adapter-wide stream: two targets would share it
 	if err := e.Validate(); err == nil {
 		t.Fatal("non-partition entity id validated")
 	}
 
-	e = snapshot("111111111111", 0, CoverageComplete)
+	e = scan("111111111111", 0, CoverageComplete)
 	if err := e.Validate(); err == nil {
 		t.Fatal("zero version validated")
 	}
 
-	for _, missing := range []func(*SnapshotCompleted){
-		func(e *SnapshotCompleted) { e.ConnectionID = "" },
-		func(e *SnapshotCompleted) { e.TargetScopeID = "" },
-		func(e *SnapshotCompleted) { e.Provider = "" },
-		func(e *SnapshotCompleted) { e.ScopeRunID = "" },
+	for _, missing := range []func(*ScanCompleted){
+		func(e *ScanCompleted) { e.ConnectionID = "" },
+		func(e *ScanCompleted) { e.TargetScopeID = "" },
+		func(e *ScanCompleted) { e.Provider = "" },
+		func(e *ScanCompleted) { e.ScopeRunID = "" },
 	} {
-		bad := snapshot("111111111111", 6, CoverageComplete)
+		bad := scan("111111111111", 6, CoverageComplete)
 		missing(&bad)
 		bad.EntityID = bad.PartitionKey()
 		if err := bad.Validate(); err == nil {
-			t.Fatalf("snapshot with missing provenance validated: %+v", bad.Provenance)
+			t.Fatalf("scan with missing provenance validated: %+v", bad.Provenance)
 		}
 	}
 }
@@ -139,7 +139,7 @@ func TestLifecycleReasonSemantics(t *testing.T) {
 }
 
 // A scope retirement only carries claim-retiring reasons: provider deletion
-// travels per-resource in snapshots, and authorization loss keeps the claim.
+// travels per-resource in scans, and authorization loss keeps the claim.
 func TestScopeRetirementReasonGate(t *testing.T) {
 	p := Provenance{ConnectionID: "conn-1", TargetScopeID: "111111111111", Provider: "aws"}
 
@@ -161,11 +161,11 @@ func TestScopeRetirementReasonGate(t *testing.T) {
 	}
 }
 
-// The full provenance survives a JSON round trip on the snapshot, and the
+// The full provenance survives a JSON round trip on the scan, and the
 // asset event carries reason and scope provenance downstream.
 func TestProvenanceJSONRoundTrip(t *testing.T) {
-	in := snapshot("111111111111", 6, CoverageComplete,
-		SnapshotResource{
+	in := scan("111111111111", 6, CoverageComplete,
+		ObservedResource{
 			Type: "AWS::EC2::VPC", ProviderResourceID: "vpc-1",
 			Body: json.RawMessage(`{"name":"main"}`),
 		})
@@ -178,7 +178,7 @@ func TestProvenanceJSONRoundTrip(t *testing.T) {
 	if err != nil {
 		t.Fatalf("marshal: %v", err)
 	}
-	var out SnapshotCompleted
+	var out ScanCompleted
 	if err := json.Unmarshal(data, &out); err != nil {
 		t.Fatalf("unmarshal: %v", err)
 	}
@@ -189,6 +189,6 @@ func TestProvenanceJSONRoundTrip(t *testing.T) {
 		t.Fatalf("collector coverage not round-tripped: %+v", out.Collectors)
 	}
 	if err := out.Validate(); err != nil {
-		t.Fatalf("round-tripped snapshot invalid: %v", err)
+		t.Fatalf("round-tripped scan invalid: %v", err)
 	}
 }

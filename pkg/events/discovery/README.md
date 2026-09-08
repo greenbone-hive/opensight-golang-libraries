@@ -7,7 +7,7 @@ payloads, and both are defined here:
 
 | Event | Endpoint | Says |
 |---|---|---|
-| `SnapshotCompleted` | `POST /discovery-snapshot` | the partition's complete live resource set, inline |
+| `ScanCompleted` | `POST /discovery-scan` | the partition's complete live resource set, inline |
 | `ScopeRetired` | `POST /discovery-scope-retired` | a target partition left the connection's coverage, and why |
 
 Discovery computes no diff and keeps no resource state: it sends what it sees
@@ -16,7 +16,7 @@ and the consumer reconciles against its own previous state.
 Two rules make that safe, and neither is enforceable by a type:
 
 - **Absence only counts when coverage is complete.** A resource missing from a
-  `partial` or `failed` snapshot is not a deletion, it is something the scan did
+  `partial` or `failed` scan is not a deletion, it is something the scan did
   not see. Consumers must gate their reap on `Coverage == CoverageComplete`.
 - **A retirement is never a provider deletion.** `ScopeRetired` says a partition
   left the operator's selection; the cloud resources may well still exist.
@@ -29,10 +29,10 @@ targets are ordered independently and never gate each other.
 ## Example Usage
 
 ```go
-evt := &discovery.SnapshotCompleted{
+evt := &discovery.ScanCompleted{
 	Meta: events.Meta{
 		ID:       scopeRunID,
-		Type:     discovery.SubjectSnapshotCompleted,
+		Type:     discovery.SubjectScanCompleted,
 		Source:   "discovery",
 		Time:     time.Now().UTC(),
 		EntityID: prov.PartitionKey(),
@@ -45,7 +45,7 @@ evt := &discovery.SnapshotCompleted{
 }
 
 if err := evt.Validate(); err != nil {
-	return fmt.Errorf("snapshot contract: %w", err)
+	return fmt.Errorf("scan contract: %w", err)
 }
 ```
 
@@ -66,7 +66,7 @@ use it.
 import "github.com/greenbone/opensight-golang-libraries/pkg/events/discovery"
 ```
 
-Package discovery is the discovery \-\> asset service event contract: the two payloads discovery pushes, the subjects that name them, and the Provenance that says which observation produced them. Each event embeds events.Meta and Provenance; the snapshot carries its full resource set inline so the consumer can reconcile on its own.
+Package discovery is the discovery \-\> asset service event contract: the two payloads discovery pushes, the subjects that name them, and the Provenance that says which observation produced them. Each event embeds events.Meta and Provenance; the scan carries its full resource set inline so the consumer can reconcile on its own.
 
 ## Index
 
@@ -76,23 +76,23 @@ Package discovery is the discovery \-\> asset service event contract: the two pa
 - [type LifecycleReason](<#LifecycleReason>)
   - [func \(r LifecycleReason\) IsProviderDeletion\(\) bool](<#LifecycleReason.IsProviderDeletion>)
   - [func \(r LifecycleReason\) RetiresClaim\(\) bool](<#LifecycleReason.RetiresClaim>)
+- [type ObservedResource](<#ObservedResource>)
 - [type Provenance](<#Provenance>)
   - [func \(p \*Provenance\) PartitionKey\(\) string](<#Provenance.PartitionKey>)
+- [type ScanCompleted](<#ScanCompleted>)
+  - [func \(e \*ScanCompleted\) Validate\(\) error](<#ScanCompleted.Validate>)
 - [type ScopeRetired](<#ScopeRetired>)
   - [func \(e \*ScopeRetired\) Validate\(\) error](<#ScopeRetired.Validate>)
-- [type SnapshotCompleted](<#SnapshotCompleted>)
-  - [func \(e \*SnapshotCompleted\) Validate\(\) error](<#SnapshotCompleted.Validate>)
-- [type SnapshotResource](<#SnapshotResource>)
 
 
 ## Constants
 
-<a name="SubjectSnapshotCompleted"></a>Event subjects: the logical event types. They are not the wire names; the bus owns the prefix it puts in front of them.
+<a name="SubjectScanCompleted"></a>Event subjects: the logical event types. They are not the wire names; the bus owns the prefix it puts in front of them.
 
 ```go
 const (
-    SubjectSnapshotCompleted = "discovery.snapshot.completed"
-    SubjectScopeRetired      = "discovery.scope.retired"
+    SubjectScanCompleted = "discovery.scan.completed"
+    SubjectScopeRetired  = "discovery.scope.retired"
 )
 ```
 
@@ -184,7 +184,20 @@ IsProviderDeletion reports whether the reason asserts the resource no longer exi
 func (r LifecycleReason) RetiresClaim() bool
 ```
 
-RetiresClaim reports whether the reason retires a source claim. Authorization loss keeps the claim \(coverage goes stale instead\), and resource deletion is carried per\-resource by snapshot diffs, not by a scope retirement.
+RetiresClaim reports whether the reason retires a source claim. Authorization loss keeps the claim \(coverage goes stale instead\), and resource deletion is carried per\-resource by scan diffs, not by a scope retirement.
+
+<a name="ObservedResource"></a>
+## type [ObservedResource](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/events.go#L47-L51>)
+
+ObservedResource is one live resource a scan observed: its identity within the partition plus the marshaled resource body \(name, resourceName, assetType, computed, tags, identifiers\).
+
+```go
+type ObservedResource struct {
+    Type               string          `json:"type"`
+    ProviderResourceID string          `json:"provider_resource_id"`
+    Body               json.RawMessage `json:"body"`
+}
+```
 
 <a name="Provenance"></a>
 ## type [Provenance](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L83-L90>)
@@ -213,6 +226,36 @@ func (p *Provenance) PartitionKey() string
 
 PartitionKey is the event\-stream identity of one target partition. Events for one partition are ordered by a per\-partition monotonic events.Meta.Version; events for different partitions are independent and must never gate each other. Producers of partitioned events MUST set events.Meta.EntityID to this key.
 
+<a name="ScanCompleted"></a>
+## type [ScanCompleted](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/events.go#L34-L42>)
+
+ScanCompleted is emitted by discovery after every scope run and pushed to the assets service with the partition's COMPLETE live resource set inline. Discovery computes no diff and keeps no resource state: the consumer owns reconciliation, diffing the scan against its own previous state.
+
+Absence semantics: a resource missing from Resources is a deletion assertion ONLY when Coverage is complete. A partial/failed scan says nothing about absence \(a failed collector's resources are simply missing\), so consumers MUST apply it upsert\-only and never reap on it. Scope exclusion, connection deletion and target moves/closures are NOT absences; they travel as ScopeRetired with their own reason.
+
+Ordering: EntityID is Provenance.PartitionKey\(\) and Version is monotonic per partition \(the scope\-run sequence, never a timestamp\), so scans of different targets are ordered independently and may arrive in any order without gating each other.
+
+```go
+type ScanCompleted struct {
+    events.Meta
+    Provenance
+    Account       string              `json:"account"`
+    TriggerSource string              `json:"trigger_source"`
+    Coverage      CoverageStatus      `json:"coverage"`
+    Collectors    []CollectorCoverage `json:"collectors,omitempty"`
+    Resources     []ObservedResource  `json:"resources"`
+}
+```
+
+<a name="ScanCompleted.Validate"></a>
+### func \(\*ScanCompleted\) [Validate](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L127>)
+
+```go
+func (e *ScanCompleted) Validate() error
+```
+
+Validate enforces the scan contract: complete provenance, the partition ordering key, and per\-resource identity. The absence safety rule \(only a complete scan asserts deletions\) cannot be validated here because absence is implicit; consumers MUST gate their reap on Coverage == complete.
+
 <a name="ScopeRetired"></a>
 ## type [ScopeRetired](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/events.go#L60-L64>)
 
@@ -233,50 +276,7 @@ type ScopeRetired struct {
 func (e *ScopeRetired) Validate() error
 ```
 
-Validate enforces the retirement contract: complete provenance, partition ordering key, and a reason that actually retires claims. resource\_deleted travels per\-resource in snapshot diffs and authorization\_lost never retires.
-
-<a name="SnapshotCompleted"></a>
-## type [SnapshotCompleted](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/events.go#L34-L42>)
-
-SnapshotCompleted is emitted by discovery after every scope run and pushed to the assets service with the partition's COMPLETE live resource set inline. Discovery computes no diff and keeps no resource state: the consumer owns reconciliation, diffing the snapshot against its own previous state.
-
-Absence semantics: a resource missing from Resources is a deletion assertion ONLY when Coverage is complete. A partial/failed snapshot says nothing about absence \(a failed collector's resources are simply missing\), so consumers MUST apply it upsert\-only and never reap on it. Scope exclusion, connection deletion and target moves/closures are NOT absences; they travel as ScopeRetired with their own reason.
-
-Ordering: EntityID is Provenance.PartitionKey\(\) and Version is monotonic per partition \(the scope\-run sequence, never a timestamp\), so snapshots of different targets are ordered independently and may arrive in any order without gating each other.
-
-```go
-type SnapshotCompleted struct {
-    events.Meta
-    Provenance
-    Account       string              `json:"account"`
-    TriggerSource string              `json:"trigger_source"`
-    Coverage      CoverageStatus      `json:"coverage"`
-    Collectors    []CollectorCoverage `json:"collectors,omitempty"`
-    Resources     []SnapshotResource  `json:"resources"`
-}
-```
-
-<a name="SnapshotCompleted.Validate"></a>
-### func \(\*SnapshotCompleted\) [Validate](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L127>)
-
-```go
-func (e *SnapshotCompleted) Validate() error
-```
-
-Validate enforces the snapshot contract: complete provenance, the partition ordering key, and per\-resource identity. The absence safety rule \(only a complete snapshot asserts deletions\) cannot be validated here because absence is implicit; consumers MUST gate their reap on Coverage == complete.
-
-<a name="SnapshotResource"></a>
-## type [SnapshotResource](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/events.go#L47-L51>)
-
-SnapshotResource is one live resource in a discovery snapshot: its identity within the partition plus the marshaled resource body \(name, resourceName, assetType, computed, tags, identifiers\).
-
-```go
-type SnapshotResource struct {
-    Type               string          `json:"type"`
-    ProviderResourceID string          `json:"provider_resource_id"`
-    Body               json.RawMessage `json:"body"`
-}
-```
+Validate enforces the retirement contract: complete provenance, partition ordering key, and a reason that actually retires claims. resource\_deleted travels per\-resource in scan diffs and authorization\_lost never retires.
 
 Generated by [gomarkdoc](<https://github.com/princjef/gomarkdoc>)
 
