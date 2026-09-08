@@ -10,10 +10,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/greenbone/opensight-golang-libraries/pkg/query"
-	"github.com/greenbone/opensight-golang-libraries/pkg/query/filter"
-	"github.com/greenbone/opensight-golang-libraries/pkg/query/paging"
-	"github.com/greenbone/opensight-golang-libraries/pkg/query/sorting"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/query"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/query/filter"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/query/paging"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/query/sorting"
 )
 
 // Settings is a configuration struct used to customize the behavior of the query builder.

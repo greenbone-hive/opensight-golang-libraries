@@ -5,7 +5,7 @@
 # keycloakapi
 
 ```go
-import "github.com/greenbone/opensight-golang-libraries/pkg/keycloakapi"
+import "github.com/greenbone-hive/opensight-golang-libraries/pkg/keycloakapi"
 ```
 
 ## Index
@@ -19,7 +19,7 @@ import "github.com/greenbone/opensight-golang-libraries/pkg/keycloakapi"
 
 
 <a name="Group"></a>
-## type [Group](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/keycloakapi/keycloak_api_client.go#L19-L22>)
+## type [Group](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/keycloakapi/keycloak_api_client.go#L19-L22>)
 
 Group represents a Keycloak group.
 
@@ -31,7 +31,7 @@ type Group struct {
 ```
 
 <a name="KeycloakAPIClient"></a>
-## type [KeycloakAPIClient](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/keycloakapi/keycloak_api_client.go#L42-L44>)
+## type [KeycloakAPIClient](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/keycloakapi/keycloak_api_client.go#L42-L44>)
 
 KeycloakAPIClient provides methods to interact with Keycloak's REST API.
 
@@ -42,7 +42,7 @@ type KeycloakAPIClient struct {
 ```
 
 <a name="NewKeycloakAPIClient"></a>
-### func [NewKeycloakAPIClient](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/keycloakapi/keycloak_api_client.go#L47>)
+### func [NewKeycloakAPIClient](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/keycloakapi/keycloak_api_client.go#L47>)
 
 ```go
 func NewKeycloakAPIClient(authClient *auth.KeycloakClient) *KeycloakAPIClient
@@ -51,7 +51,7 @@ func NewKeycloakAPIClient(authClient *auth.KeycloakClient) *KeycloakAPIClient
 NewKeycloakAPIClient creates a new KeycloakAPIClient.
 
 <a name="KeycloakAPIClient.ListGroups"></a>
-### func \(\*KeycloakAPIClient\) [ListGroups](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/keycloakapi/keycloak_api_client.go#L53>)
+### func \(\*KeycloakAPIClient\) [ListGroups](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/keycloakapi/keycloak_api_client.go#L53>)
 
 ```go
 func (kc *KeycloakAPIClient) ListGroups(ctx context.Context) ([]Group, error)
@@ -60,7 +60,7 @@ func (kc *KeycloakAPIClient) ListGroups(ctx context.Context) ([]Group, error)
 ListGroups retrieves all groups from Keycloak. ListGroups retrieves all groups from Keycloak and flattens groups \+ subgroups.
 
 <a name="KeycloakAPIClient.ListUsers"></a>
-### func \(\*KeycloakAPIClient\) [ListUsers](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/keycloakapi/keycloak_api_client.go#L95>)
+### func \(\*KeycloakAPIClient\) [ListUsers](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/keycloakapi/keycloak_api_client.go#L95>)
 
 ```go
 func (kc *KeycloakAPIClient) ListUsers(ctx context.Context) ([]User, error)
@@ -69,7 +69,7 @@ func (kc *KeycloakAPIClient) ListUsers(ctx context.Context) ([]User, error)
 ListUsers retrieves all users from Keycloak.
 
 <a name="User"></a>
-## type [User](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/keycloakapi/keycloak_api_client.go#L25-L31>)
+## type [User](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/keycloakapi/keycloak_api_client.go#L25-L31>)
 
 User represents a Keycloak user.
 

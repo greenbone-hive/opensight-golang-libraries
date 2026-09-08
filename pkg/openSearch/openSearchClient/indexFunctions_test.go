@@ -16,8 +16,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/greenbone/opensight-golang-libraries/pkg/openSearch/openSearchClient/config"
-	"github.com/greenbone/opensight-golang-libraries/pkg/openSearch/ostesting"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/openSearch/openSearchClient/config"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/openSearch/ostesting"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

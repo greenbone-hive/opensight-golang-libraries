@@ -4,7 +4,7 @@
 
 package query
 
-import "github.com/greenbone/opensight-golang-libraries/pkg/query/filter"
+import "github.com/greenbone-hive/opensight-golang-libraries/pkg/query/filter"
 
 // FilterOption hold the information for a filter option. It can be used by a client to determine possible filters.
 //

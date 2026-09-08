@@ -14,9 +14,9 @@ import (
 	"time"
 
 	"github.com/aquasecurity/esquery"
-	"github.com/greenbone/opensight-golang-libraries/pkg/openSearch/ostesting"
-	"github.com/greenbone/opensight-golang-libraries/pkg/query/filter"
-	"github.com/greenbone/opensight-golang-libraries/pkg/query/sorting"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/openSearch/ostesting"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/query/filter"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/query/sorting"
 	"github.com/opensearch-project/opensearch-go/v4/opensearchapi"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

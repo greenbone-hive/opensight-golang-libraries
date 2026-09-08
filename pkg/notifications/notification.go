@@ -15,7 +15,7 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/greenbone/opensight-golang-libraries/pkg/retryableRequest"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/retryableRequest"
 )
 
 const (

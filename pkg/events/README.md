@@ -21,7 +21,7 @@ Subpackages:
 # events
 
 ```go
-import "github.com/greenbone/opensight-golang-libraries/pkg/events"
+import "github.com/greenbone-hive/opensight-golang-libraries/pkg/events"
 ```
 
 Package events holds the envelope every event carries. The payloads live in the subpackages, one per producer\-consumer contract.
@@ -33,7 +33,7 @@ Package events holds the envelope every event carries. The payloads live in the 
 
 
 <a name="Meta"></a>
-## type [Meta](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/meta.go#L19-L26>)
+## type [Meta](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/events/meta.go#L19-L26>)
 
 Meta is embedded in every event. EntityID and Version are the idempotency/ordering key: consumers keep the highest Version per EntityID and drop anything not newer. Ordering is per EntityID stream, and Version is a monotonic sequence, never a timestamp, which cannot order parallel producers of one stream.
 
@@ -49,7 +49,7 @@ type Meta struct {
 ```
 
 <a name="Meta.Key"></a>
-### func \(\*Meta\) [Key](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/meta.go#L28>)
+### func \(\*Meta\) [Key](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/events/meta.go#L28>)
 
 ```go
 func (m *Meta) Key() string

@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/greenbone/opensight-golang-libraries/pkg/query/filter"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/query/filter"
 	"github.com/lib/pq"
 )
 

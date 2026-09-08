@@ -10,7 +10,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 
-	"github.com/greenbone/opensight-golang-libraries/pkg/dbcrypt"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/dbcrypt"
 )
 
 func TestCipherEncryptAndDecrypt(t *testing.T) {

@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/greenbone/opensight-golang-libraries/pkg/query/paging"
-	"github.com/greenbone/opensight-golang-libraries/pkg/query/sorting"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/query/paging"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/query/sorting"
 
 	"github.com/aquasecurity/esquery"
 )

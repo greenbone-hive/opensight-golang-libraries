@@ -7,7 +7,7 @@ package assettype
 import (
 	"testing"
 
-	"github.com/greenbone/opensight-golang-libraries/pkg/assets/assetcategory"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/assets/assetcategory"
 )
 
 func TestAllHasNoDuplicates(t *testing.T) {

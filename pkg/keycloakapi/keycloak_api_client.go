@@ -12,7 +12,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/greenbone/opensight-golang-libraries/pkg/auth"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/auth"
 )
 
 // Group represents a Keycloak group.

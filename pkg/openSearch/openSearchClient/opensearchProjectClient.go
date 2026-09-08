@@ -11,7 +11,7 @@ import (
 	"net/http"
 
 	"github.com/avast/retry-go/v4"
-	"github.com/greenbone/opensight-golang-libraries/pkg/openSearch/openSearchClient/config"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/openSearch/openSearchClient/config"
 	"github.com/opensearch-project/opensearch-go/v4"
 	"github.com/opensearch-project/opensearch-go/v4/opensearchapi"
 	"github.com/rs/zerolog/log"

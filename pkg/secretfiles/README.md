@@ -5,7 +5,7 @@
 # secretfiles
 
 ```go
-import "github.com/greenbone/opensight-golang-libraries/pkg/secretfiles"
+import "github.com/greenbone-hive/opensight-golang-libraries/pkg/secretfiles"
 ```
 
 Package secretfiles eases the parsing of secret files into a string. This is a common scenario when working with docker secrets, where the path to the secret is usually stored in an environment variable \<SECRET\>\_FILE containing a path to a secret stored in the container filesystem.
@@ -16,7 +16,7 @@ Package secretfiles eases the parsing of secret files into a string. This is a c
 
 
 <a name="ReadSecret"></a>
-## func [ReadSecret](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/secretfiles/secret_files.go#L21>)
+## func [ReadSecret](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/secretfiles/secret_files.go#L21>)
 
 ```go
 func ReadSecret(envVar string, target *string) error

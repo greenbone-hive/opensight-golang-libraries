@@ -1,4 +1,4 @@
-module github.com/greenbone/opensight-golang-libraries
+module github.com/greenbone-hive/opensight-golang-libraries
 
 go 1.26
 

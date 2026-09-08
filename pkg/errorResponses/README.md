@@ -5,7 +5,7 @@
 # errorResponses
 
 ```go
-import "github.com/greenbone/opensight-golang-libraries/pkg/errorResponses"
+import "github.com/greenbone-hive/opensight-golang-libraries/pkg/errorResponses"
 ```
 
 Package errorResponses provides rest api models for errors
@@ -45,7 +45,7 @@ var ErrorInternalResponse = ErrorResponse{
 ```
 
 <a name="ErrorResponse"></a>
-## type [ErrorResponse](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/errorResponses/errorResponses.go#L10-L15>)
+## type [ErrorResponse](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/errorResponses/errorResponses.go#L10-L15>)
 
 
 
@@ -59,7 +59,7 @@ type ErrorResponse struct {
 ```
 
 <a name="NewErrorGenericResponse"></a>
-### func [NewErrorGenericResponse](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/errorResponses/errorResponses.go#L33>)
+### func [NewErrorGenericResponse](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/errorResponses/errorResponses.go#L33>)
 
 ```go
 func NewErrorGenericResponse(message ...any) ErrorResponse
@@ -68,7 +68,7 @@ func NewErrorGenericResponse(message ...any) ErrorResponse
 NewErrorGenericResponse returns a [ErrorResponse](<#ErrorResponse>) of type Generic with the given error message. The message is handled the same as [fmt.Println](<https://pkg.go.dev/fmt/#Println>).
 
 <a name="NewErrorValidationResponse"></a>
-### func [NewErrorValidationResponse](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/errorResponses/errorResponses.go#L41>)
+### func [NewErrorValidationResponse](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/errorResponses/errorResponses.go#L41>)
 
 ```go
 func NewErrorValidationResponse(title, details string, errors map[string]string) ErrorResponse

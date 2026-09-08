@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/greenbone/opensight-golang-libraries/pkg/slices"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/slices"
 )
 
 // ValidateFilter validates the filter in the request

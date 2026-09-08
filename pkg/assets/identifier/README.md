@@ -29,7 +29,7 @@ if !identifier.Valid(claim.Type) {
 # identifier
 
 ```go
-import "github.com/greenbone/opensight-golang-libraries/pkg/assets/identifier"
+import "github.com/greenbone-hive/opensight-golang-libraries/pkg/assets/identifier"
 ```
 
 ## Index
@@ -57,7 +57,7 @@ var All = []Type{
 ```
 
 <a name="Valid"></a>
-## func [Valid](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/assets/identifier/identifier.go#L31>)
+## func [Valid](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/assets/identifier/identifier.go#L31>)
 
 ```go
 func Valid(t Type) bool
@@ -66,7 +66,7 @@ func Valid(t Type) bool
 
 
 <a name="Type"></a>
-## type [Type](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/assets/identifier/identifier.go#L7>)
+## type [Type](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/assets/identifier/identifier.go#L7>)
 
 
 

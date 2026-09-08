@@ -10,7 +10,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/greenbone/opensight-golang-libraries/pkg/auth"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/auth"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

@@ -31,7 +31,7 @@ if !assettype.IsKnown(incoming) {
 # assettype
 
 ```go
-import "github.com/greenbone/opensight-golang-libraries/pkg/assets/assettype"
+import "github.com/greenbone-hive/opensight-golang-libraries/pkg/assets/assettype"
 ```
 
 ## Index
@@ -209,7 +209,7 @@ var All = []Type{
 ```
 
 <a name="CategoryOf"></a>
-## func [CategoryOf](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/assets/assettype/assettype.go#L492>)
+## func [CategoryOf](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/assets/assettype/assettype.go#L492>)
 
 ```go
 func CategoryOf(t Type) assetcategory.Category
@@ -218,7 +218,7 @@ func CategoryOf(t Type) assetcategory.Category
 
 
 <a name="IsKnown"></a>
-## func [IsKnown](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/assets/assettype/assettype.go#L500>)
+## func [IsKnown](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/assets/assettype/assettype.go#L500>)
 
 ```go
 func IsKnown(t Type) bool
@@ -227,7 +227,7 @@ func IsKnown(t Type) bool
 
 
 <a name="Type"></a>
-## type [Type](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/assets/assettype/assettype.go#L9>)
+## type [Type](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/assets/assettype/assettype.go#L9>)
 
 
 

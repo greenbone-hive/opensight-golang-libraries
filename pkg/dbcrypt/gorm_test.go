@@ -11,7 +11,7 @@ import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 
-	"github.com/greenbone/opensight-golang-libraries/pkg/dbcrypt"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/dbcrypt"
 )
 
 func newTestDb[T any](t *testing.T) *gorm.DB {

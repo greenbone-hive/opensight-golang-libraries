@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/aquasecurity/esquery"
-	"github.com/greenbone/opensight-golang-libraries/pkg/query/sorting"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/query/sorting"
 	"github.com/stretchr/testify/assert"
 )
 

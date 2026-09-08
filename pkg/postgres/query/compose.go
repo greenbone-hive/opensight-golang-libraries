@@ -9,7 +9,7 @@ import (
 	"maps"
 	"slices"
 
-	"github.com/greenbone/opensight-golang-libraries/pkg/query/filter"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/query/filter"
 )
 
 // composeQuery takes a filter request field and translates it into a SQL query condition

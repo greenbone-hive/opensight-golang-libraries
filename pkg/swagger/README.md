@@ -46,7 +46,7 @@ Licensed under the [GNU General Public License v3.0 or later](../../LICENSE).
 # ginSwagger
 
 ```go
-import "github.com/greenbone/opensight-golang-libraries/pkg/swagger"
+import "github.com/greenbone-hive/opensight-golang-libraries/pkg/swagger"
 ```
 
 ## Index
@@ -75,7 +75,7 @@ var WrapHandler = GinWrapHandler()
 ```
 
 <a name="CSPConnectSrc"></a>
-## func [CSPConnectSrc](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/swagger/ginSwagger.go#L90>)
+## func [CSPConnectSrc](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/swagger/ginSwagger.go#L90>)
 
 ```go
 func CSPConnectSrc(urls ...string) func(*Config)
@@ -84,7 +84,7 @@ func CSPConnectSrc(urls ...string) func(*Config)
 CSPConnectSrc adds URLs to the Content Security Policy's connect\-src directive. This is necessary to allow the Swagger UI to communicate with Keycloak for authentication. Note: The connect\-src directive expects only scheme://host:port without paths
 
 <a name="DeepLinking"></a>
-## func [DeepLinking](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/swagger/ginSwagger.go#L45>)
+## func [DeepLinking](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/swagger/ginSwagger.go#L45>)
 
 ```go
 func DeepLinking(deepLinking bool) func(*Config)
@@ -93,7 +93,7 @@ func DeepLinking(deepLinking bool) func(*Config)
 
 
 <a name="DocExpansion"></a>
-## func [DocExpansion](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/swagger/ginSwagger.go#L57>)
+## func [DocExpansion](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/swagger/ginSwagger.go#L57>)
 
 ```go
 func DocExpansion(docExpansion string) func(*Config)
@@ -102,7 +102,7 @@ func DocExpansion(docExpansion string) func(*Config)
 
 
 <a name="DomID"></a>
-## func [DomID](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/swagger/ginSwagger.go#L63>)
+## func [DomID](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/swagger/ginSwagger.go#L63>)
 
 ```go
 func DomID(domID string) func(*Config)
@@ -111,7 +111,7 @@ func DomID(domID string) func(*Config)
 
 
 <a name="GinWrapHandler"></a>
-## func [GinWrapHandler](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/swagger/ginSwagger.go#L117>)
+## func [GinWrapHandler](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/swagger/ginSwagger.go#L117>)
 
 ```go
 func GinWrapHandler(options ...func(*Config)) gin.HandlerFunc
@@ -120,7 +120,7 @@ func GinWrapHandler(options ...func(*Config)) gin.HandlerFunc
 
 
 <a name="InstanceName"></a>
-## func [InstanceName](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/swagger/ginSwagger.go#L69>)
+## func [InstanceName](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/swagger/ginSwagger.go#L69>)
 
 ```go
 func InstanceName(instanceName string) func(*Config)
@@ -129,7 +129,7 @@ func InstanceName(instanceName string) func(*Config)
 
 
 <a name="OAuth"></a>
-## func [OAuth](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/swagger/ginSwagger.go#L81>)
+## func [OAuth](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/swagger/ginSwagger.go#L81>)
 
 ```go
 func OAuth(config *OAuthConfig) func(*Config)
@@ -138,7 +138,7 @@ func OAuth(config *OAuthConfig) func(*Config)
 
 
 <a name="PersistAuthorization"></a>
-## func [PersistAuthorization](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/swagger/ginSwagger.go#L75>)
+## func [PersistAuthorization](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/swagger/ginSwagger.go#L75>)
 
 ```go
 func PersistAuthorization(persistAuthorization bool) func(*Config)
@@ -147,7 +147,7 @@ func PersistAuthorization(persistAuthorization bool) func(*Config)
 
 
 <a name="SyntaxHighlight"></a>
-## func [SyntaxHighlight](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/swagger/ginSwagger.go#L51>)
+## func [SyntaxHighlight](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/swagger/ginSwagger.go#L51>)
 
 ```go
 func SyntaxHighlight(syntaxHighlight bool) func(*Config)
@@ -156,7 +156,7 @@ func SyntaxHighlight(syntaxHighlight bool) func(*Config)
 
 
 <a name="URL"></a>
-## func [URL](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/swagger/ginSwagger.go#L39>)
+## func [URL](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/swagger/ginSwagger.go#L39>)
 
 ```go
 func URL(url string) func(*Config)
@@ -165,7 +165,7 @@ func URL(url string) func(*Config)
 
 
 <a name="Config"></a>
-## type [Config](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/swagger/ginSwagger.go#L21-L31>)
+## type [Config](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/swagger/ginSwagger.go#L21-L31>)
 
 Config stores ginSwagger configuration variables.
 
@@ -184,7 +184,7 @@ type Config struct {
 ```
 
 <a name="OAuthConfig"></a>
-## type [OAuthConfig](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/swagger/ginSwagger.go#L33-L37>)
+## type [OAuthConfig](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/swagger/ginSwagger.go#L33-L37>)
 
 
 

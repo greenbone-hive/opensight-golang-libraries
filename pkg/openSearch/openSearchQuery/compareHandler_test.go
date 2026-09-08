@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/aquasecurity/esquery"
-	esextensions "github.com/greenbone/opensight-golang-libraries/pkg/openSearch/esextension"
+	esextensions "github.com/greenbone-hive/opensight-golang-libraries/pkg/openSearch/esextension"
 	"github.com/stretchr/testify/assert"
 )
 

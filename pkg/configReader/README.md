@@ -22,7 +22,7 @@ Then, in your code, you can use the `ReadEnvVarsIntoStruct` function to read env
 package main
 
 import (
-	"github.com/greenbone/opensight-golang-libraries/configReader"
+	"github.com/greenbone-hive/opensight-golang-libraries/configReader"
 )
 
 func main() {
@@ -58,7 +58,7 @@ The `configReader` package uses [Viper](https://github.com/spf13/viper) for read
 # configReader
 
 ```go
-import "github.com/greenbone/opensight-golang-libraries/pkg/configReader"
+import "github.com/greenbone-hive/opensight-golang-libraries/pkg/configReader"
 ```
 
 ## Index
@@ -67,7 +67,7 @@ import "github.com/greenbone/opensight-golang-libraries/pkg/configReader"
 
 
 <a name="ReadEnvVarsIntoStruct"></a>
-## func [ReadEnvVarsIntoStruct](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/configReader/configReader.go#L21>)
+## func [ReadEnvVarsIntoStruct](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/configReader/configReader.go#L21>)
 
 ```go
 func ReadEnvVarsIntoStruct(s any) (any, error)

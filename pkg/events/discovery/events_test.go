@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/greenbone/opensight-golang-libraries/pkg/events"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/events"
 )
 
 func TestEventJSONRoundTrip(t *testing.T) {

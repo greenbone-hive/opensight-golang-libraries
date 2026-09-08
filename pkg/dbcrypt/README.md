@@ -14,7 +14,7 @@ package main
 import (
 	"log"
 
-	"github.com/greenbone/opensight-golang-libraries/pkg/dbcrypt"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/dbcrypt"
 )
 
 type Person struct {
@@ -58,7 +58,7 @@ In this example, a Person struct is created and `PasswordField` is automatically
 # dbcrypt
 
 ```go
-import "github.com/greenbone/opensight-golang-libraries/pkg/dbcrypt"
+import "github.com/greenbone-hive/opensight-golang-libraries/pkg/dbcrypt"
 ```
 
 ## Index
@@ -73,7 +73,7 @@ import "github.com/greenbone/opensight-golang-libraries/pkg/dbcrypt"
 
 
 <a name="Register"></a>
-## func [Register](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/dbcrypt/gorm.go#L174>)
+## func [Register](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/dbcrypt/gorm.go#L174>)
 
 ```go
 func Register(db *gorm.DB, c *DBCipher) error
@@ -82,7 +82,7 @@ func Register(db *gorm.DB, c *DBCipher) error
 Register registers encryption and decryption callbacks for the provided data base, to perform automatically cryptographic operations on all models that contain a field tagged with 'encrypt:"true"'.
 
 <a name="Config"></a>
-## type [Config](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/dbcrypt/dbcipher.go#L16-L32>)
+## type [Config](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/dbcrypt/dbcipher.go#L16-L32>)
 
 Config encapsulates configuration for DBCipher.
 
@@ -107,7 +107,7 @@ type Config struct {
 ```
 
 <a name="Config.Validate"></a>
-### func \(Config\) [Validate](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/dbcrypt/dbcipher.go#L35>)
+### func \(Config\) [Validate](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/dbcrypt/dbcipher.go#L35>)
 
 ```go
 func (conf Config) Validate() error
@@ -116,7 +116,7 @@ func (conf Config) Validate() error
 Validate validates the provided config.
 
 <a name="DBCipher"></a>
-## type [DBCipher](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/dbcrypt/dbcipher.go#L49-L52>)
+## type [DBCipher](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/dbcrypt/dbcipher.go#L49-L52>)
 
 DBCipher is cipher designed to perform validated encryption and decryption on database values.
 
@@ -127,7 +127,7 @@ type DBCipher struct {
 ```
 
 <a name="NewDBCipher"></a>
-### func [NewDBCipher](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/dbcrypt/dbcipher.go#L55>)
+### func [NewDBCipher](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/dbcrypt/dbcipher.go#L55>)
 
 ```go
 func NewDBCipher(conf Config) (*DBCipher, error)
@@ -136,7 +136,7 @@ func NewDBCipher(conf Config) (*DBCipher, error)
 NewDBCipher creates a new instance of DBCipher based on the provided Config.
 
 <a name="DBCipher.Decrypt"></a>
-### func \(\*DBCipher\) [Decrypt](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/dbcrypt/dbcipher.go#L95>)
+### func \(\*DBCipher\) [Decrypt](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/dbcrypt/dbcipher.go#L95>)
 
 ```go
 func (c *DBCipher) Decrypt(ciphertextWithPrefix []byte) ([]byte, error)
@@ -145,7 +145,7 @@ func (c *DBCipher) Decrypt(ciphertextWithPrefix []byte) ([]byte, error)
 Decrypt decrypts the provided bytes with DBCipher.
 
 <a name="DBCipher.Encrypt"></a>
-### func \(\*DBCipher\) [Encrypt](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/dbcrypt/dbcipher.go#L82>)
+### func \(\*DBCipher\) [Encrypt](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/dbcrypt/dbcipher.go#L82>)
 
 ```go
 func (c *DBCipher) Encrypt(plaintext []byte) ([]byte, error)
