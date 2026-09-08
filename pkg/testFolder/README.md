@@ -7,7 +7,7 @@
 # testFolder
 
 ```go
-import "github.com/greenbone/opensight-golang-libraries/pkg/testFolder"
+import "github.com/greenbone-hive/opensight-golang-libraries/pkg/testFolder"
 ```
 
 ## Index
@@ -17,7 +17,7 @@ import "github.com/greenbone/opensight-golang-libraries/pkg/testFolder"
 
 
 <a name="TestFolder"></a>
-## type [TestFolder](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/testFolder/testFolder.go#L19-L22>)
+## type [TestFolder](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/testFolder/testFolder.go#L19-L22>)
 
 TestFolder is an interface that provides methods for accessing content and reading files from a test folder. GetContent retrieves the content of a file located at a specified path. It takes a \*testing.T object and a string path as parameters. It returns the content of the file as a string.
 
@@ -29,7 +29,7 @@ type TestFolder interface {
 ```
 
 <a name="NewTestFolder"></a>
-### func [NewTestFolder](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/testFolder/testFolder.go#L55>)
+### func [NewTestFolder](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/testFolder/testFolder.go#L55>)
 
 ```go
 func NewTestFolder() TestFolder

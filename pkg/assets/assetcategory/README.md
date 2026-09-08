@@ -30,7 +30,7 @@ for _, c := range assetcategory.All {
 # assetcategory
 
 ```go
-import "github.com/greenbone/opensight-golang-libraries/pkg/assets/assetcategory"
+import "github.com/greenbone-hive/opensight-golang-libraries/pkg/assets/assetcategory"
 ```
 
 ## Index
@@ -53,7 +53,7 @@ var All = []Category{
 ```
 
 <a name="Category"></a>
-## type [Category](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/assets/assetcategory/assetcategory.go#L7>)
+## type [Category](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/assets/assetcategory/assetcategory.go#L7>)
 
 
 

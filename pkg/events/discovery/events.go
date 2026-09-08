@@ -10,7 +10,7 @@ package discovery
 import (
 	"encoding/json"
 
-	"github.com/greenbone/opensight-golang-libraries/pkg/events"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/events"
 )
 
 // ScanCompleted carries the partition's COMPLETE live resource set inline.

@@ -4,7 +4,7 @@
 
 package assettype
 
-import "github.com/greenbone/opensight-golang-libraries/pkg/assets/assetcategory"
+import "github.com/greenbone-hive/opensight-golang-libraries/pkg/assets/assetcategory"
 
 type Type string
 

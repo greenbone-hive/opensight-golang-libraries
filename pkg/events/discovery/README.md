@@ -63,7 +63,7 @@ use it.
 # discovery
 
 ```go
-import "github.com/greenbone/opensight-golang-libraries/pkg/events/discovery"
+import "github.com/greenbone-hive/opensight-golang-libraries/pkg/events/discovery"
 ```
 
 Package discovery is the discovery \-\> asset service event contract: the two payloads discovery pushes and the provenance that says which observation produced them.
@@ -97,7 +97,7 @@ const (
 ```
 
 <a name="CollectorCoverage"></a>
-## type [CollectorCoverage](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L88-L93>)
+## type [CollectorCoverage](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L88-L93>)
 
 CollectorCoverage carries "global" as RegionOrGlobal for collectors that are not regional.
 
@@ -111,7 +111,7 @@ type CollectorCoverage struct {
 ```
 
 <a name="CoverageStatus"></a>
-## type [CoverageStatus](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L14>)
+## type [CoverageStatus](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L14>)
 
 CoverageStatus is how completely a scan partition was read. Only CoverageComplete authorizes removals; partial and failed can only upsert.
 
@@ -130,7 +130,7 @@ const (
 ```
 
 <a name="LifecycleReason"></a>
-## type [LifecycleReason](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L25>)
+## type [LifecycleReason](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L25>)
 
 LifecycleReason says WHY something left a consumer's view. Only ReasonResourceDeleted asserts the resource is gone at the provider; every other reason is a control\-plane or authorization change.
 
@@ -154,7 +154,7 @@ const (
 ```
 
 <a name="LifecycleReason.IsProviderDeletion"></a>
-### func \(LifecycleReason\) [IsProviderDeletion](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L51>)
+### func \(LifecycleReason\) [IsProviderDeletion](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L51>)
 
 ```go
 func (r LifecycleReason) IsProviderDeletion() bool
@@ -163,7 +163,7 @@ func (r LifecycleReason) IsProviderDeletion() bool
 
 
 <a name="LifecycleReason.RetiresClaim"></a>
-### func \(LifecycleReason\) [RetiresClaim](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L40>)
+### func \(LifecycleReason\) [RetiresClaim](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L40>)
 
 ```go
 func (r LifecycleReason) RetiresClaim() bool
@@ -172,7 +172,7 @@ func (r LifecycleReason) RetiresClaim() bool
 RetiresClaim is false for resource deletion: that travels per\-resource in a scan, not as a retirement.
 
 <a name="ObservedResource"></a>
-## type [ObservedResource](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/events.go#L37-L41>)
+## type [ObservedResource](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/events/discovery/events.go#L37-L41>)
 
 ObservedResource carries the resource in Body as marshaled JSON: name, resourceName, assetType, computed, tags and identifiers.
 
@@ -185,7 +185,7 @@ type ObservedResource struct {
 ```
 
 <a name="Provenance"></a>
-## type [Provenance](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L57-L64>)
+## type [Provenance](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L57-L64>)
 
 Provenance travels intact through discovery \-\> asset management \-\> exposure. ConnectionID is provenance, NOT identity: canonical identity is \(provider, canonicalResourceId\), so two connections observing one resource yield two source claims and one asset.
 
@@ -201,7 +201,7 @@ type Provenance struct {
 ```
 
 <a name="Provenance.PartitionKey"></a>
-### func \(\*Provenance\) [PartitionKey](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L69>)
+### func \(\*Provenance\) [PartitionKey](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L69>)
 
 ```go
 func (p *Provenance) PartitionKey() string
@@ -210,7 +210,7 @@ func (p *Provenance) PartitionKey() string
 PartitionKey is the event\-stream identity of one target partition. Producers must set events.Meta.EntityID to it: partitions are ordered independently and must never gate each other.
 
 <a name="ScanCompleted"></a>
-## type [ScanCompleted](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/events.go#L25-L33>)
+## type [ScanCompleted](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/events/discovery/events.go#L25-L33>)
 
 ScanCompleted carries the partition's COMPLETE live resource set inline. Discovery computes no diff and keeps no resource state; the consumer reconciles against its own previous state.
 
@@ -229,7 +229,7 @@ type ScanCompleted struct {
 ```
 
 <a name="ScanCompleted.Validate"></a>
-### func \(\*ScanCompleted\) [Validate](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L98>)
+### func \(\*ScanCompleted\) [Validate](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L98>)
 
 ```go
 func (e *ScanCompleted) Validate() error
@@ -238,7 +238,7 @@ func (e *ScanCompleted) Validate() error
 Validate enforces what the producer can be held to. The absence rule is not among it: absence is implicit, so consumers must gate their reap on Coverage == CoverageComplete themselves.
 
 <a name="ScopeRetired"></a>
-## type [ScopeRetired](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/events.go#L45-L49>)
+## type [ScopeRetired](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/events/discovery/events.go#L45-L49>)
 
 ScopeRetired never asserts the partition's resources were deleted at the provider; the reason says which control\-plane change removed it.
 
@@ -251,7 +251,7 @@ type ScopeRetired struct {
 ```
 
 <a name="ScopeRetired.Validate"></a>
-### func \(\*ScopeRetired\) [Validate](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L120>)
+### func \(\*ScopeRetired\) [Validate](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L120>)
 
 ```go
 func (e *ScopeRetired) Validate() error

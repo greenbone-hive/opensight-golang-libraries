@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/greenbone/opensight-golang-libraries/pkg/events"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/events"
 )
 
 func scan(target string, version int64, coverage CoverageStatus, resources ...ObservedResource) ScanCompleted {

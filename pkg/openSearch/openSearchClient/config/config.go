@@ -5,7 +5,7 @@
 package config
 
 import (
-	"github.com/greenbone/opensight-golang-libraries/pkg/configReader"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/configReader"
 	"github.com/rs/zerolog/log"
 )
 

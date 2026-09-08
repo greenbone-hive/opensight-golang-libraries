@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/greenbone/opensight-golang-libraries/pkg/openSearch/openSearchClient/config"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/openSearch/openSearchClient/config"
 	"github.com/opensearch-project/opensearch-go/v4"
 	"github.com/opensearch-project/opensearch-go/v4/opensearchapi"
 	"github.com/stretchr/testify/assert"

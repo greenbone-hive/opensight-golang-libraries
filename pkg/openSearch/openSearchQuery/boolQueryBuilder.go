@@ -8,7 +8,7 @@ import (
 	"fmt"
 
 	"github.com/aquasecurity/esquery"
-	"github.com/greenbone/opensight-golang-libraries/pkg/query/filter"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/query/filter"
 )
 
 // BoolQueryBuilder is a builder for an OpenSearch bool query.

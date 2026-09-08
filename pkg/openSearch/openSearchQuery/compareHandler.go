@@ -12,7 +12,7 @@ import (
 
 	"github.com/rs/zerolog/log"
 
-	esextensions "github.com/greenbone/opensight-golang-libraries/pkg/openSearch/esextension"
+	esextensions "github.com/greenbone-hive/opensight-golang-libraries/pkg/openSearch/esextension"
 
 	"github.com/aquasecurity/esquery"
 	"github.com/samber/lo"

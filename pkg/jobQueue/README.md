@@ -20,7 +20,7 @@ package main
 import (
 "context"
 "fmt"
-"github.com/greenbone/opensight-golang-libraries/pkg/jobQueue"
+"github.com/greenbone-hive/opensight-golang-libraries/pkg/jobQueue"
 "time"
 )
 
@@ -69,7 +69,7 @@ processed after the first request.
 # jobQueue
 
 ```go
-import "github.com/greenbone/opensight-golang-libraries/pkg/jobQueue"
+import "github.com/greenbone-hive/opensight-golang-libraries/pkg/jobQueue"
 ```
 
 Package jobQueue provides a thread\-safe queue of requests to execute a predefined function. When a request is added to an empty queue, it is processed immediately. If there is already a request running, the new request will be executed after the current one. If several requests are waiting, only the last one is processed
@@ -83,7 +83,7 @@ Package jobQueue provides a thread\-safe queue of requests to execute a predefin
 
 
 <a name="JobQueue"></a>
-## type [JobQueue](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/jobQueue/jobQueue.go#L20-L25>)
+## type [JobQueue](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/jobQueue/jobQueue.go#L20-L25>)
 
 JobQueue is a thread\-safe queue of requests to execute a predefined function.
 
@@ -94,7 +94,7 @@ type JobQueue struct {
 ```
 
 <a name="NewJobQueue"></a>
-### func [NewJobQueue](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/jobQueue/jobQueue.go#L30>)
+### func [NewJobQueue](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/jobQueue/jobQueue.go#L30>)
 
 ```go
 func NewJobQueue(execFunc func() error, context context.Context) *JobQueue
@@ -103,7 +103,7 @@ func NewJobQueue(execFunc func() error, context context.Context) *JobQueue
 NewJobQueue creates a new job queue execFunc is the function to be executed for each request that is processed context is the context of the caller
 
 <a name="JobQueue.AddQueueRequest"></a>
-### func \(\*JobQueue\) [AddQueueRequest](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/jobQueue/jobQueue.go#L49>)
+### func \(\*JobQueue\) [AddQueueRequest](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/jobQueue/jobQueue.go#L49>)
 
 ```go
 func (q *JobQueue) AddQueueRequest(req Request)
@@ -116,7 +116,7 @@ The job queue is designed to be used in situations where multiple requests of th
 If a request is added to the queue while another request is being processed, the new request will be added to the queue and processed after the current request has finished. If there is already a request in the queue, the old request will be considered obsolete and replaced by the new request. \[jobQueue\_test.go\]\(jobQueue\_test.go\) illustrates this behaviour.
 
 <a name="Request"></a>
-## type [Request](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/jobQueue/jobQueue.go#L15-L17>)
+## type [Request](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/jobQueue/jobQueue.go#L15-L17>)
 
 Request is a request to be processed by the queue and allows to provide an ID for identification
 

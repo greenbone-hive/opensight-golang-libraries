@@ -15,7 +15,7 @@ import (
 
 	"github.com/rs/zerolog/log"
 
-	"github.com/greenbone/opensight-golang-libraries/pkg/testFolder"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/testFolder"
 	"github.com/stretchr/testify/require"
 
 	"github.com/stretchr/testify/assert"

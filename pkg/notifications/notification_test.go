@@ -14,7 +14,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/greenbone/opensight-golang-libraries/pkg/notifications/mocks"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/notifications/mocks"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"

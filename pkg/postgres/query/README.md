@@ -5,7 +5,7 @@
 # query
 
 ```go
-import "github.com/greenbone/opensight-golang-libraries/pkg/postgres/query"
+import "github.com/greenbone-hive/opensight-golang-libraries/pkg/postgres/query"
 ```
 
 Package query facilitates the translation of a result selector into a PostgresSQL conditional query string, incorporating sorting and paging functionalities.
@@ -19,7 +19,7 @@ Package query facilitates the translation of a result selector into a PostgresSQ
 
 
 <a name="Builder"></a>
-## type [Builder](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/postgres/query/builder.go#L34-L37>)
+## type [Builder](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/postgres/query/builder.go#L34-L37>)
 
 Builder represents a query builder used to construct PostgresSQL conditional query strings with sorting and paging functionalities.
 
@@ -30,7 +30,7 @@ type Builder struct {
 ```
 
 <a name="NewPostgresQueryBuilder"></a>
-### func [NewPostgresQueryBuilder](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/postgres/query/builder.go#L40>)
+### func [NewPostgresQueryBuilder](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/postgres/query/builder.go#L40>)
 
 ```go
 func NewPostgresQueryBuilder(querySetting Settings) (*Builder, error)
@@ -39,7 +39,7 @@ func NewPostgresQueryBuilder(querySetting Settings) (*Builder, error)
 NewPostgresQueryBuilder creates a new instance of the query builder with the provided settings.
 
 <a name="Builder.Build"></a>
-### func \(\*Builder\) [Build](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/postgres/query/builder.go#L178>)
+### func \(\*Builder\) [Build](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/postgres/query/builder.go#L178>)
 
 ```go
 func (qb *Builder) Build(resultSelector query.ResultSelector) (query string, args []any, err error)
@@ -48,7 +48,7 @@ func (qb *Builder) Build(resultSelector query.ResultSelector) (query string, arg
 Build generates the complete postgres SQL query based on the provided result selector. It constructs the query by adding filter, sorting, and paging conditions. It returns the constructed query string, and all the individual filter fields values \(args\) in a single list
 
 <a name="Settings"></a>
-## type [Settings](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/postgres/query/builder.go#L20-L30>)
+## type [Settings](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/postgres/query/builder.go#L20-L30>)
 
 Settings is a configuration struct used to customize the behavior of the query builder.
 

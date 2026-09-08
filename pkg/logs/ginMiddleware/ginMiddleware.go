@@ -8,7 +8,7 @@ import (
 	"github.com/gin-contrib/logger"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/greenbone/opensight-golang-libraries/pkg/logs"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/logs"
 	"github.com/rs/zerolog"
 )
 

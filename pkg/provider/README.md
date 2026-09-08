@@ -32,7 +32,7 @@ for _, p := range provider.All {
 # provider
 
 ```go
-import "github.com/greenbone/opensight-golang-libraries/pkg/provider"
+import "github.com/greenbone-hive/opensight-golang-libraries/pkg/provider"
 ```
 
 ## Index
@@ -51,7 +51,7 @@ var All = []Provider{AWS, Azure, GCP, GreenboneAppliance}
 ```
 
 <a name="Valid"></a>
-## func [Valid](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/provider/provider.go#L18>)
+## func [Valid](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/provider/provider.go#L18>)
 
 ```go
 func Valid(p Provider) bool
@@ -60,7 +60,7 @@ func Valid(p Provider) bool
 
 
 <a name="Provider"></a>
-## type [Provider](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/provider/provider.go#L7>)
+## type [Provider](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/provider/provider.go#L7>)
 
 
 

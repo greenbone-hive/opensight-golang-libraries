@@ -8,7 +8,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/greenbone/opensight-golang-libraries/internal/testconfig"
+	"github.com/greenbone-hive/opensight-golang-libraries/internal/testconfig"
 	"github.com/rs/zerolog/log"
 )
 

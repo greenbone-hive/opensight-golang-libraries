@@ -5,9 +5,9 @@
 package query
 
 import (
-	"github.com/greenbone/opensight-golang-libraries/pkg/query/filter"
-	"github.com/greenbone/opensight-golang-libraries/pkg/query/paging"
-	"github.com/greenbone/opensight-golang-libraries/pkg/query/sorting"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/query/filter"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/query/paging"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/query/sorting"
 )
 
 // ResultSelector is a type that represents the selection criteria for querying data. It contains a filter, sorting, and paging information.

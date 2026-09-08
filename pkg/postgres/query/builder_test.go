@@ -13,11 +13,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/greenbone/opensight-golang-libraries/internal/pgtesting"
-	"github.com/greenbone/opensight-golang-libraries/pkg/query"
-	"github.com/greenbone/opensight-golang-libraries/pkg/query/filter"
-	"github.com/greenbone/opensight-golang-libraries/pkg/query/paging"
-	"github.com/greenbone/opensight-golang-libraries/pkg/query/sorting"
+	"github.com/greenbone-hive/opensight-golang-libraries/internal/pgtesting"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/query"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/query/filter"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/query/paging"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/query/sorting"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

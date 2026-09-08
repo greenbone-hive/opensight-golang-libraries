@@ -7,8 +7,8 @@ package openSearchQuery
 import (
 	"testing"
 
-	"github.com/greenbone/opensight-golang-libraries/pkg/query/filter"
-	"github.com/greenbone/opensight-golang-libraries/pkg/testFolder"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/query/filter"
+	"github.com/greenbone-hive/opensight-golang-libraries/pkg/testFolder"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

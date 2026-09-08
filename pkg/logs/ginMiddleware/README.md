@@ -5,7 +5,7 @@
 # ginMiddleware
 
 ```go
-import "github.com/greenbone/opensight-golang-libraries/pkg/logs/ginMiddleware"
+import "github.com/greenbone-hive/opensight-golang-libraries/pkg/logs/ginMiddleware"
 ```
 
 ## Index
@@ -14,7 +14,7 @@ import "github.com/greenbone/opensight-golang-libraries/pkg/logs/ginMiddleware"
 
 
 <a name="Logging"></a>
-## func [Logging](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/logs/ginMiddleware/ginMiddleware.go#L27>)
+## func [Logging](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/logs/ginMiddleware/ginMiddleware.go#L27>)
 
 ```go
 func Logging() gin.HandlerFunc
