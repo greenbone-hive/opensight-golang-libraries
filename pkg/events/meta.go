@@ -2,10 +2,10 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-// Package events defines the platform's event schemas as format-neutral Go
-// structs (ADR-016). Every event embeds Meta. The wire codec (JSON by default)
-// lives in the bus package, so the serialization format can change without
-// touching these schemas.
+// Package events holds the envelope every event carries, whatever contract it
+// belongs to. The payloads live in the subpackages, one per producer-consumer
+// contract. The structs are format-neutral: the wire codec is the transport's
+// concern, so the serialization format can change without touching a schema.
 package events
 
 import (
@@ -15,16 +15,16 @@ import (
 
 // Meta is the common metadata embedded in every event. EntityID and Version
 // form the idempotency/ordering key consumers use to drop duplicate or
-// out-of-order events ((entity_id, version); ADR-012/013).
+// out-of-order events.
 //
 // Ordering is strictly per EntityID stream: streams never gate each other.
-// Partitioned events (discovery snapshots/retirements, asset batches) use
+// Partitioned events (a discovery snapshot or retirement, say) use
 // Provenance.PartitionKey() as EntityID with a per-partition monotonic
 // sequence as Version, never a timestamp, which cannot order parallel
 // producers of one partition.
 type Meta struct {
 	ID       string    `json:"id"`        // unique event id
-	Type     string    `json:"type"`      // subject/type, e.g. "asset.upserted"
+	Type     string    `json:"type"`      // subject, e.g. "discovery.snapshot.completed"
 	Source   string    `json:"source"`    // publishing service
 	Time     time.Time `json:"time"`      // occurred-at (UTC)
 	EntityID string    `json:"entity_id"` // idempotency/ordering key

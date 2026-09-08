@@ -1,43 +1,16 @@
 ![Greenbone Logo](https://www.greenbone.net/wp-content/uploads/gb_new-logo_horizontal_rgb_small.png)
 
-# events Package Documentation
+# Overview
 
-This package holds the discovery -> asset service event contract: the two event
-payloads, the subjects that name them, the `Meta` envelope every event embeds
-and the `Provenance` that identifies which scope run produced it. Producer and
-consumer compile against the same structs, so a renamed field is a build failure
-rather than a payload a consumer silently fails to parse.
+The envelope every event carries, whatever contract it belongs to. `Meta` holds
+the event id, its subject, who published it, when it happened, and the
+`(entity_id, version)` pair consumers use to drop duplicates and out-of-order
+deliveries.
 
-The package is transport-agnostic: it defines what an event *is*, not how it is
-delivered. Subjects are the logical event names; the bus owns whatever prefix it
-puts on the wire.
+The payloads live in the subpackages, one per producer-consumer contract.
 
-## Example Usage
-
-```go
-evt := &events.DiscoverySnapshotCompleted{
-	Meta: events.Meta{
-		ID:       scopeRunID,
-		Type:     events.SubjectDiscoverySnapshotCompleted,
-		Source:   "discovery",
-		Time:     time.Now().UTC(),
-		EntityID: prov.PartitionKey(),
-		Version:  version,
-	},
-	Provenance: prov,
-	Account:    scopeID,
-	Coverage:   coverage,
-	Resources:  resources,
-}
-
-if err := evt.Validate(); err != nil {
-	return fmt.Errorf("snapshot contract: %w", err)
-}
-```
-
-`Validate` is what makes the contract enforceable: a producer that leaves a
-required field empty fails at the point it builds the event, not at the consumer
-that cannot parse it.
+Subpackages:
+* [discovery](discovery/README.md) - the discovery to asset service contract: the snapshot and retirement payloads
 
 ---
 
@@ -51,191 +24,25 @@ that cannot parse it.
 import "github.com/greenbone/opensight-golang-libraries/pkg/events"
 ```
 
-Package events defines the platform's event schemas as format\-neutral Go structs \(ADR\-016\). Every event embeds Meta. The wire codec \(JSON by default\) lives in the bus package, so the serialization format can change without touching these schemas.
+Package events holds the envelope every event carries, whatever contract it belongs to. The payloads live in the subpackages, one per producer\-consumer contract. The structs are format\-neutral: the wire codec is the transport's concern, so the serialization format can change without touching a schema.
 
 ## Index
 
-- [Constants](<#constants>)
-- [type CollectorCoverage](<#CollectorCoverage>)
-- [type CoverageStatus](<#CoverageStatus>)
-- [type DiscoveryScopeRetired](<#DiscoveryScopeRetired>)
-  - [func \(e \*DiscoveryScopeRetired\) Validate\(\) error](<#DiscoveryScopeRetired.Validate>)
-- [type DiscoverySnapshotCompleted](<#DiscoverySnapshotCompleted>)
-  - [func \(e \*DiscoverySnapshotCompleted\) Validate\(\) error](<#DiscoverySnapshotCompleted.Validate>)
-- [type LifecycleReason](<#LifecycleReason>)
-  - [func \(r LifecycleReason\) IsProviderDeletion\(\) bool](<#LifecycleReason.IsProviderDeletion>)
-  - [func \(r LifecycleReason\) RetiresClaim\(\) bool](<#LifecycleReason.RetiresClaim>)
 - [type Meta](<#Meta>)
   - [func \(m \*Meta\) Key\(\) string](<#Meta.Key>)
-- [type Provenance](<#Provenance>)
-  - [func \(p \*Provenance\) PartitionKey\(\) string](<#Provenance.PartitionKey>)
-- [type SnapshotResource](<#SnapshotResource>)
 
-
-## Constants
-
-<a name="SubjectDiscoverySnapshotCompleted"></a>Event subjects: the logical event types. They are not the wire names; the bus owns the prefix it puts in front of them.
-
-```go
-const (
-    SubjectDiscoverySnapshotCompleted = "discovery.snapshot.completed"
-    SubjectDiscoveryScopeRetired      = "discovery.scope.retired"
-)
-```
-
-<a name="CollectorCoverage"></a>
-## type [CollectorCoverage](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/provenance.go#L117-L122>)
-
-CollectorCoverage is one collector×region completeness verdict inside a scope run. RegionOrGlobal is the region name or "global" for global collectors.
-
-```go
-type CollectorCoverage struct {
-    Collector      string         `json:"collector"`
-    RegionOrGlobal string         `json:"region_or_global"`
-    Status         CoverageStatus `json:"status"`
-    Error          string         `json:"error,omitempty"`
-}
-```
-
-<a name="CoverageStatus"></a>
-## type [CoverageStatus](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/provenance.go#L15>)
-
-CoverageStatus is the completeness verdict of one scan partition \(a target scope, or a collector×region within it\). Only CoverageComplete authorizes authoritative removals; partial/failed coverage can only upsert.
-
-```go
-type CoverageStatus string
-```
-
-<a name="CoverageComplete"></a>The coverage verdicts.
-
-```go
-const (
-    // CoverageComplete: every selected collector finished all pages and nested
-    // reads for the partition. The partition's absence set is authoritative.
-    CoverageComplete CoverageStatus = "complete"
-    // CoveragePartial: at least one collector failed or was interrupted; the
-    // produced set is a lower bound and asserts nothing about absence.
-    CoveragePartial CoverageStatus = "partial"
-    // CoverageFailed: the partition produced no usable state (auth failure,
-    // throttling, cancellation, missing role, disabled API).
-    CoverageFailed CoverageStatus = "failed"
-)
-```
-
-<a name="DiscoveryScopeRetired"></a>
-## type [DiscoveryScopeRetired](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/events.go#L55-L59>)
-
-DiscoveryScopeRetired is emitted by discovery when a target partition leaves a connection's coverage for a control\-plane reason: the operator excluded it, the connection was deleted, or hierarchy reconciliation found the target moved or closed. Consumers retire the partition's source claims with the carried reason; it never asserts provider deletion \(see LifecycleReason\). EntityID is Provenance.PartitionKey\(\); Version continues the partition's monotonic sequence.
-
-```go
-type DiscoveryScopeRetired struct {
-    Meta
-    Provenance
-    Reason LifecycleReason `json:"reason"`
-}
-```
-
-<a name="DiscoveryScopeRetired.Validate"></a>
-### func \(\*DiscoveryScopeRetired\) [Validate](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/provenance.go#L153>)
-
-```go
-func (e *DiscoveryScopeRetired) Validate() error
-```
-
-Validate enforces the retirement contract: complete provenance, partition ordering key, and a reason that actually retires claims. resource\_deleted travels per\-resource in snapshot diffs and authorization\_lost never retires.
-
-<a name="DiscoverySnapshotCompleted"></a>
-## type [DiscoverySnapshotCompleted](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/events.go#L29-L37>)
-
-DiscoverySnapshotCompleted is emitted by discovery after every scope run and pushed to the assets service with the partition's COMPLETE live resource set inline. Discovery computes no diff and keeps no resource state: the consumer owns reconciliation, diffing the snapshot against its own previous state.
-
-Absence semantics: a resource missing from Resources is a deletion assertion ONLY when Coverage is complete. A partial/failed snapshot says nothing about absence \(a failed collector's resources are simply missing\), so consumers MUST apply it upsert\-only and never reap on it. Scope exclusion, connection deletion and target moves/closures are NOT absences; they travel as DiscoveryScopeRetired with their own reason.
-
-Ordering: EntityID is Provenance.PartitionKey\(\) and Version is monotonic per partition \(the scope\-run sequence, never a timestamp\), so snapshots of different targets are ordered independently and may arrive in any order without gating each other.
-
-```go
-type DiscoverySnapshotCompleted struct {
-    Meta
-    Provenance
-    Account       string              `json:"account"`
-    TriggerSource string              `json:"trigger_source"`
-    Coverage      CoverageStatus      `json:"coverage"`
-    Collectors    []CollectorCoverage `json:"collectors,omitempty"`
-    Resources     []SnapshotResource  `json:"resources"`
-}
-```
-
-<a name="DiscoverySnapshotCompleted.Validate"></a>
-### func \(\*DiscoverySnapshotCompleted\) [Validate](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/provenance.go#L128>)
-
-```go
-func (e *DiscoverySnapshotCompleted) Validate() error
-```
-
-Validate enforces the snapshot contract: complete provenance, the partition ordering key, and per\-resource identity. The absence safety rule \(only a complete snapshot asserts deletions\) cannot be validated here because absence is implicit; consumers MUST gate their reap on Coverage == complete.
-
-<a name="LifecycleReason"></a>
-## type [LifecycleReason](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/provenance.go#L34>)
-
-LifecycleReason says WHY a resource, source claim or target scope left a consumer's view. Only ReasonResourceDeleted asserts the resource is gone at the cloud provider; every other reason is a control\-plane or authorization change and must never be treated as provider deletion.
-
-```go
-type LifecycleReason string
-```
-
-<a name="ReasonResourceDeleted"></a>The lifecycle reasons.
-
-```go
-const (
-    // ReasonResourceDeleted: a COMPLETE scan of the owning partition no longer
-    // observed the resource. The only reason that asserts provider deletion.
-    ReasonResourceDeleted LifecycleReason = "resource_deleted"
-    // ReasonScopeExcluded: the operator removed the target/region/collector from
-    // the connection's selection. Claims retire; the cloud resource may live on.
-    ReasonScopeExcluded LifecycleReason = "scope_excluded"
-    // ReasonConnectionDeleted: the connection was deleted; all its claims retire.
-    ReasonConnectionDeleted LifecycleReason = "connection_deleted"
-    // ReasonAuthorizationLost: the producer can no longer read the scope. Claims
-    // are kept; coverage turns unknown/stale. Never retires a claim by itself.
-    ReasonAuthorizationLost LifecycleReason = "authorization_lost"
-    // ReasonTargetMoved: hierarchy reconciliation moved the target out of the
-    // selected subtree; treated like an exclusion, not a deletion.
-    ReasonTargetMoved LifecycleReason = "target_moved"
-    // ReasonTargetClosed: the provider reports the account/subscription/project
-    // as closed or suspended.
-    ReasonTargetClosed LifecycleReason = "target_closed"
-)
-```
-
-<a name="LifecycleReason.IsProviderDeletion"></a>
-### func \(LifecycleReason\) [IsProviderDeletion](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/provenance.go#L73>)
-
-```go
-func (r LifecycleReason) IsProviderDeletion() bool
-```
-
-IsProviderDeletion reports whether the reason asserts the resource no longer exists at the cloud provider.
-
-<a name="LifecycleReason.RetiresClaim"></a>
-### func \(LifecycleReason\) [RetiresClaim](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/provenance.go#L60>)
-
-```go
-func (r LifecycleReason) RetiresClaim() bool
-```
-
-RetiresClaim reports whether the reason retires a source claim. Authorization loss keeps the claim \(coverage goes stale instead\), and resource deletion is carried per\-resource by snapshot diffs, not by a scope retirement.
 
 <a name="Meta"></a>
 ## type [Meta](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/meta.go#L25-L32>)
 
-Meta is the common metadata embedded in every event. EntityID and Version form the idempotency/ordering key consumers use to drop duplicate or out\-of\-order events \(\(entity\_id, version\); ADR\-012/013\).
+Meta is the common metadata embedded in every event. EntityID and Version form the idempotency/ordering key consumers use to drop duplicate or out\-of\-order events.
 
-Ordering is strictly per EntityID stream: streams never gate each other. Partitioned events \(discovery snapshots/retirements, asset batches\) use Provenance.PartitionKey\(\) as EntityID with a per\-partition monotonic sequence as Version, never a timestamp, which cannot order parallel producers of one partition.
+Ordering is strictly per EntityID stream: streams never gate each other. Partitioned events \(a discovery snapshot or retirement, say\) use Provenance.PartitionKey\(\) as EntityID with a per\-partition monotonic sequence as Version, never a timestamp, which cannot order parallel producers of one partition.
 
 ```go
 type Meta struct {
     ID       string    `json:"id"`        // unique event id
-    Type     string    `json:"type"`      // subject/type, e.g. "asset.upserted"
+    Type     string    `json:"type"`      // subject, e.g. "discovery.snapshot.completed"
     Source   string    `json:"source"`    // publishing service
     Time     time.Time `json:"time"`      // occurred-at (UTC)
     EntityID string    `json:"entity_id"` // idempotency/ordering key
@@ -251,46 +58,6 @@ func (m *Meta) Key() string
 ```
 
 Key returns the idempotency/ordering key for the event. Consumers store the highest processed Version per EntityID and ignore anything not newer.
-
-<a name="Provenance"></a>
-## type [Provenance](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/provenance.go#L84-L91>)
-
-Provenance identifies exactly which observation of the cloud produced an event: which connection \(and its config revision\), target scope \(account/subscription/project\), logical run and per\-target scope run, and provider. It is embedded in every discovery\-sourced event and travels intact through Discovery \-\> Asset Management \-\> Exposure.
-
-ConnectionID is provenance, NOT canonical identity: canonical resource/asset/ graph identity is \(provider, canonicalResourceId\). Two connections observing one resource yield two source claims and one asset.
-
-```go
-type Provenance struct {
-    ConnectionID       string `json:"connection_id"`
-    ConnectionRevision int64  `json:"connection_revision"`
-    TargetScopeID      string `json:"target_scope_id"`
-    RunID              string `json:"run_id"`
-    ScopeRunID         string `json:"scope_run_id"`
-    Provider           string `json:"provider"`
-}
-```
-
-<a name="Provenance.PartitionKey"></a>
-### func \(\*Provenance\) [PartitionKey](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/provenance.go#L97>)
-
-```go
-func (p *Provenance) PartitionKey() string
-```
-
-PartitionKey is the event\-stream identity of one target partition. Events for one partition are ordered by a per\-partition monotonic Meta.Version; events for different partitions are independent and must never gate each other. Producers of partitioned events MUST set Meta.EntityID to this key.
-
-<a name="SnapshotResource"></a>
-## type [SnapshotResource](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/events.go#L42-L46>)
-
-SnapshotResource is one live resource in a discovery snapshot: its identity within the partition plus the marshaled resource body \(name, resourceName, assetType, computed, tags, identifiers\).
-
-```go
-type SnapshotResource struct {
-    Type               string          `json:"type"`
-    ProviderResourceID string          `json:"provider_resource_id"`
-    Body               json.RawMessage `json:"body"`
-}
-```
 
 Generated by [gomarkdoc](<https://github.com/princjef/gomarkdoc>)
 

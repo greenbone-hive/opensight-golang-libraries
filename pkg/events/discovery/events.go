@@ -2,15 +2,20 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-package events
+// Package discovery is the discovery -> asset service event contract: the two
+// payloads discovery pushes, the subjects that name them, and the Provenance
+// that says which observation produced them. Each event embeds events.Meta and
+// Provenance; the snapshot carries its full resource set inline so the consumer
+// can reconcile on its own.
+package discovery
 
-import "encoding/json"
+import (
+	"encoding/json"
 
-// This file holds the typed event payloads of the discovery -> asset service
-// contract. Each event embeds Meta and Provenance; the snapshot carries its
-// full resource set inline so the consumer can reconcile on its own.
+	"github.com/greenbone/opensight-golang-libraries/pkg/events"
+)
 
-// DiscoverySnapshotCompleted is emitted by discovery after every scope run and
+// SnapshotCompleted is emitted by discovery after every scope run and
 // pushed to the assets service with the partition's COMPLETE live resource set
 // inline. Discovery computes no diff and keeps no resource state: the consumer
 // owns reconciliation, diffing the snapshot against its own previous state.
@@ -20,14 +25,14 @@ import "encoding/json"
 // absence (a failed collector's resources are simply missing), so consumers
 // MUST apply it upsert-only and never reap on it. Scope exclusion, connection
 // deletion and target moves/closures are NOT absences; they travel as
-// DiscoveryScopeRetired with their own reason.
+// ScopeRetired with their own reason.
 //
 // Ordering: EntityID is Provenance.PartitionKey() and Version is monotonic per
 // partition (the scope-run sequence, never a timestamp), so snapshots of
 // different targets are ordered independently and may arrive in any order
 // without gating each other.
-type DiscoverySnapshotCompleted struct {
-	Meta
+type SnapshotCompleted struct {
+	events.Meta
 	Provenance
 	Account       string              `json:"account"`
 	TriggerSource string              `json:"trigger_source"`
@@ -45,15 +50,15 @@ type SnapshotResource struct {
 	Body               json.RawMessage `json:"body"`
 }
 
-// DiscoveryScopeRetired is emitted by discovery when a target partition leaves
+// ScopeRetired is emitted by discovery when a target partition leaves
 // a connection's coverage for a control-plane reason: the operator excluded it,
 // the connection was deleted, or hierarchy reconciliation found the target
 // moved or closed. Consumers retire the partition's source claims with the
 // carried reason; it never asserts provider deletion (see LifecycleReason).
 // EntityID is Provenance.PartitionKey(); Version continues the partition's
 // monotonic sequence.
-type DiscoveryScopeRetired struct {
-	Meta
+type ScopeRetired struct {
+	events.Meta
 	Provenance
 	Reason LifecycleReason `json:"reason"`
 }

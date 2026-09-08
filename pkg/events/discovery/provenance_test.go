@@ -2,23 +2,25 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-package events
+package discovery
 
 import (
 	"encoding/json"
 	"strings"
 	"testing"
+
+	"github.com/greenbone/opensight-golang-libraries/pkg/events"
 )
 
-func snapshot(target string, version int64, coverage CoverageStatus, resources ...SnapshotResource) DiscoverySnapshotCompleted {
+func snapshot(target string, version int64, coverage CoverageStatus, resources ...SnapshotResource) SnapshotCompleted {
 	p := Provenance{
 		ConnectionID: "conn-1", ConnectionRevision: 2,
 		TargetScopeID: target, RunID: "10", ScopeRunID: "77", Provider: "aws",
 	}
 
-	return DiscoverySnapshotCompleted{
-		Meta: Meta{
-			ID: "evt", Type: SubjectDiscoverySnapshotCompleted, Source: "discovery",
+	return SnapshotCompleted{
+		Meta: events.Meta{
+			ID: "evt", Type: SubjectSnapshotCompleted, Source: "discovery",
 			EntityID: p.PartitionKey(), Version: version,
 		},
 		Provenance: p,
@@ -92,11 +94,11 @@ func TestSnapshotOrderingContract(t *testing.T) {
 		t.Fatal("zero version validated")
 	}
 
-	for _, missing := range []func(*DiscoverySnapshotCompleted){
-		func(e *DiscoverySnapshotCompleted) { e.ConnectionID = "" },
-		func(e *DiscoverySnapshotCompleted) { e.TargetScopeID = "" },
-		func(e *DiscoverySnapshotCompleted) { e.Provider = "" },
-		func(e *DiscoverySnapshotCompleted) { e.ScopeRunID = "" },
+	for _, missing := range []func(*SnapshotCompleted){
+		func(e *SnapshotCompleted) { e.ConnectionID = "" },
+		func(e *SnapshotCompleted) { e.TargetScopeID = "" },
+		func(e *SnapshotCompleted) { e.Provider = "" },
+		func(e *SnapshotCompleted) { e.ScopeRunID = "" },
 	} {
 		bad := snapshot("111111111111", 6, CoverageComplete)
 		missing(&bad)
@@ -141,8 +143,8 @@ func TestLifecycleReasonSemantics(t *testing.T) {
 func TestScopeRetirementReasonGate(t *testing.T) {
 	p := Provenance{ConnectionID: "conn-1", TargetScopeID: "111111111111", Provider: "aws"}
 
-	ok := DiscoveryScopeRetired{
-		Meta:       Meta{EntityID: p.PartitionKey(), Version: 9},
+	ok := ScopeRetired{
+		Meta:       events.Meta{EntityID: p.PartitionKey(), Version: 9},
 		Provenance: p,
 		Reason:     ReasonScopeExcluded,
 	}
@@ -176,7 +178,7 @@ func TestProvenanceJSONRoundTrip(t *testing.T) {
 	if err != nil {
 		t.Fatalf("marshal: %v", err)
 	}
-	var out DiscoverySnapshotCompleted
+	var out SnapshotCompleted
 	if err := json.Unmarshal(data, &out); err != nil {
 		t.Fatalf("unmarshal: %v", err)
 	}

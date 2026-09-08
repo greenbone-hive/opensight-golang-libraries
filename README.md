@@ -13,7 +13,7 @@ The following functionalities are provided:
 * [assets](pkg/assets/README.md) - the canonical asset taxonomy: category, type, identity claims and computed-value keys
 * [configReader](pkg/configReader/README.md) - reads the configuration based on environment variables with predefined defaults
 * [dbcrypt](pkg/dbcrypt/README.md) - provides encryption / decryption for fields of entities persisted with GORM
-* [events](pkg/events/README.md) - the discovery to asset service event contract: payloads, subjects, envelope and provenance
+* [events](pkg/events/README.md) - the envelope every event carries, with one subpackage per producer-consumer contract
 * [errorResponses](pkg/errorResponses/README.md) - rest api models for errors
 * [jobQueue](pkg/jobQueue/README.md) - a simple job queue
 * [notifications](pkg/notifications/README.md) - a client to send notifications to the openSight Notification Service 
