@@ -4,8 +4,8 @@
 
 package discovery
 
-// Event subjects: the logical event types. They are not the wire names; the bus
-// owns the prefix it puts in front of them.
+// Subjects are the logical event names, not the wire names: the bus owns the
+// prefix it puts in front of them.
 const (
 	SubjectScanCompleted = "discovery.scan.completed"
 	SubjectScopeRetired  = "discovery.scope.retired"

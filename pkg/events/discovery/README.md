@@ -66,7 +66,7 @@ use it.
 import "github.com/greenbone/opensight-golang-libraries/pkg/events/discovery"
 ```
 
-Package discovery is the discovery \-\> asset service event contract: the two payloads discovery pushes, the subjects that name them, and the Provenance that says which observation produced them. Each event embeds events.Meta and Provenance; the scan carries its full resource set inline so the consumer can reconcile on its own.
+Package discovery is the discovery \-\> asset service event contract: the two payloads discovery pushes and the provenance that says which observation produced them.
 
 ## Index
 
@@ -87,7 +87,7 @@ Package discovery is the discovery \-\> asset service event contract: the two pa
 
 ## Constants
 
-<a name="SubjectScanCompleted"></a>Event subjects: the logical event types. They are not the wire names; the bus owns the prefix it puts in front of them.
+<a name="SubjectScanCompleted"></a>Subjects are the logical event names, not the wire names: the bus owns the prefix it puts in front of them.
 
 ```go
 const (
@@ -97,9 +97,9 @@ const (
 ```
 
 <a name="CollectorCoverage"></a>
-## type [CollectorCoverage](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L116-L121>)
+## type [CollectorCoverage](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L88-L93>)
 
-CollectorCoverage is one collector×region completeness verdict inside a scope run. RegionOrGlobal is the region name or "global" for global collectors.
+CollectorCoverage carries "global" as RegionOrGlobal for collectors that are not regional.
 
 ```go
 type CollectorCoverage struct {
@@ -111,9 +111,9 @@ type CollectorCoverage struct {
 ```
 
 <a name="CoverageStatus"></a>
-## type [CoverageStatus](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L15>)
+## type [CoverageStatus](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L14>)
 
-CoverageStatus is the completeness verdict of one scan partition \(a target scope, or a collector×region within it\). Only CoverageComplete authorizes authoritative removals; partial/failed coverage can only upsert.
+CoverageStatus is how completely a scan partition was read. Only CoverageComplete authorizes removals; partial and failed can only upsert.
 
 ```go
 type CoverageStatus string
@@ -123,73 +123,58 @@ type CoverageStatus string
 
 ```go
 const (
-    // CoverageComplete: every selected collector finished all pages and nested
-    // reads for the partition. The partition's absence set is authoritative.
     CoverageComplete CoverageStatus = "complete"
-    // CoveragePartial: at least one collector failed or was interrupted; the
-    // produced set is a lower bound and asserts nothing about absence.
-    CoveragePartial CoverageStatus = "partial"
-    // CoverageFailed: the partition produced no usable state (auth failure,
-    // throttling, cancellation, missing role, disabled API).
-    CoverageFailed CoverageStatus = "failed"
+    CoveragePartial  CoverageStatus = "partial"
+    CoverageFailed   CoverageStatus = "failed"
 )
 ```
 
 <a name="LifecycleReason"></a>
-## type [LifecycleReason](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L33>)
+## type [LifecycleReason](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L25>)
 
-LifecycleReason says WHY a resource, source claim or target scope left a consumer's view. Only ReasonResourceDeleted asserts the resource is gone at the cloud provider; every other reason is a control\-plane or authorization change and must never be treated as provider deletion.
+LifecycleReason says WHY something left a consumer's view. Only ReasonResourceDeleted asserts the resource is gone at the provider; every other reason is a control\-plane or authorization change.
 
 ```go
 type LifecycleReason string
 ```
 
-<a name="ReasonResourceDeleted"></a>The lifecycle reasons.
+<a name="ReasonResourceDeleted"></a>
 
 ```go
 const (
-    // ReasonResourceDeleted: a COMPLETE scan of the owning partition no longer
-    // observed the resource. The only reason that asserts provider deletion.
-    ReasonResourceDeleted LifecycleReason = "resource_deleted"
-    // ReasonScopeExcluded: the operator removed the target/region/collector from
-    // the connection's selection. Claims retire; the cloud resource may live on.
-    ReasonScopeExcluded LifecycleReason = "scope_excluded"
-    // ReasonConnectionDeleted: the connection was deleted; all its claims retire.
+    ReasonResourceDeleted   LifecycleReason = "resource_deleted"
+    ReasonScopeExcluded     LifecycleReason = "scope_excluded"
     ReasonConnectionDeleted LifecycleReason = "connection_deleted"
-    // ReasonAuthorizationLost: the producer can no longer read the scope. Claims
-    // are kept; coverage turns unknown/stale. Never retires a claim by itself.
+    // ReasonAuthorizationLost keeps the claim: the producer lost read access, so
+    // coverage goes stale rather than the claim being retired.
     ReasonAuthorizationLost LifecycleReason = "authorization_lost"
-    // ReasonTargetMoved: hierarchy reconciliation moved the target out of the
-    // selected subtree; treated like an exclusion, not a deletion.
-    ReasonTargetMoved LifecycleReason = "target_moved"
-    // ReasonTargetClosed: the provider reports the account/subscription/project
-    // as closed or suspended.
-    ReasonTargetClosed LifecycleReason = "target_closed"
+    ReasonTargetMoved       LifecycleReason = "target_moved"
+    ReasonTargetClosed      LifecycleReason = "target_closed"
 )
 ```
 
 <a name="LifecycleReason.IsProviderDeletion"></a>
-### func \(LifecycleReason\) [IsProviderDeletion](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L72>)
+### func \(LifecycleReason\) [IsProviderDeletion](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L51>)
 
 ```go
 func (r LifecycleReason) IsProviderDeletion() bool
 ```
 
-IsProviderDeletion reports whether the reason asserts the resource no longer exists at the cloud provider.
+
 
 <a name="LifecycleReason.RetiresClaim"></a>
-### func \(LifecycleReason\) [RetiresClaim](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L59>)
+### func \(LifecycleReason\) [RetiresClaim](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L40>)
 
 ```go
 func (r LifecycleReason) RetiresClaim() bool
 ```
 
-RetiresClaim reports whether the reason retires a source claim. Authorization loss keeps the claim \(coverage goes stale instead\), and resource deletion is carried per\-resource by scan diffs, not by a scope retirement.
+RetiresClaim is false for resource deletion: that travels per\-resource in a scan, not as a retirement.
 
 <a name="ObservedResource"></a>
-## type [ObservedResource](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/events.go#L47-L51>)
+## type [ObservedResource](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/events.go#L37-L41>)
 
-ObservedResource is one live resource a scan observed: its identity within the partition plus the marshaled resource body \(name, resourceName, assetType, computed, tags, identifiers\).
+ObservedResource carries the resource in Body as marshaled JSON: name, resourceName, assetType, computed, tags and identifiers.
 
 ```go
 type ObservedResource struct {
@@ -200,11 +185,9 @@ type ObservedResource struct {
 ```
 
 <a name="Provenance"></a>
-## type [Provenance](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L83-L90>)
+## type [Provenance](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L57-L64>)
 
-Provenance identifies exactly which observation of the cloud produced an event: which connection \(and its config revision\), target scope \(account/subscription/project\), logical run and per\-target scope run, and provider. It is embedded in every discovery\-sourced event and travels intact through Discovery \-\> Asset Management \-\> Exposure.
-
-ConnectionID is provenance, NOT canonical identity: canonical resource/asset/ graph identity is \(provider, canonicalResourceId\). Two connections observing one resource yield two source claims and one asset.
+Provenance travels intact through discovery \-\> asset management \-\> exposure. ConnectionID is provenance, NOT identity: canonical identity is \(provider, canonicalResourceId\), so two connections observing one resource yield two source claims and one asset.
 
 ```go
 type Provenance struct {
@@ -218,22 +201,20 @@ type Provenance struct {
 ```
 
 <a name="Provenance.PartitionKey"></a>
-### func \(\*Provenance\) [PartitionKey](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L96>)
+### func \(\*Provenance\) [PartitionKey](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L69>)
 
 ```go
 func (p *Provenance) PartitionKey() string
 ```
 
-PartitionKey is the event\-stream identity of one target partition. Events for one partition are ordered by a per\-partition monotonic events.Meta.Version; events for different partitions are independent and must never gate each other. Producers of partitioned events MUST set events.Meta.EntityID to this key.
+PartitionKey is the event\-stream identity of one target partition. Producers must set events.Meta.EntityID to it: partitions are ordered independently and must never gate each other.
 
 <a name="ScanCompleted"></a>
-## type [ScanCompleted](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/events.go#L34-L42>)
+## type [ScanCompleted](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/events.go#L25-L33>)
 
-ScanCompleted is emitted by discovery after every scope run and pushed to the assets service with the partition's COMPLETE live resource set inline. Discovery computes no diff and keeps no resource state: the consumer owns reconciliation, diffing the scan against its own previous state.
+ScanCompleted carries the partition's COMPLETE live resource set inline. Discovery computes no diff and keeps no resource state; the consumer reconciles against its own previous state.
 
-Absence semantics: a resource missing from Resources is a deletion assertion ONLY when Coverage is complete. A partial/failed scan says nothing about absence \(a failed collector's resources are simply missing\), so consumers MUST apply it upsert\-only and never reap on it. Scope exclusion, connection deletion and target moves/closures are NOT absences; they travel as ScopeRetired with their own reason.
-
-Ordering: EntityID is Provenance.PartitionKey\(\) and Version is monotonic per partition \(the scope\-run sequence, never a timestamp\), so scans of different targets are ordered independently and may arrive in any order without gating each other.
+A resource missing from Resources is a deletion assertion ONLY when Coverage is complete. A partial or failed scan says nothing about absence, so consumers apply it upsert\-only and never reap on it. Scope exclusion, connection deletion and target moves are not absences: they travel as ScopeRetired.
 
 ```go
 type ScanCompleted struct {
@@ -248,18 +229,18 @@ type ScanCompleted struct {
 ```
 
 <a name="ScanCompleted.Validate"></a>
-### func \(\*ScanCompleted\) [Validate](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L127>)
+### func \(\*ScanCompleted\) [Validate](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L98>)
 
 ```go
 func (e *ScanCompleted) Validate() error
 ```
 
-Validate enforces the scan contract: complete provenance, the partition ordering key, and per\-resource identity. The absence safety rule \(only a complete scan asserts deletions\) cannot be validated here because absence is implicit; consumers MUST gate their reap on Coverage == complete.
+Validate enforces what the producer can be held to. The absence rule is not among it: absence is implicit, so consumers must gate their reap on Coverage == CoverageComplete themselves.
 
 <a name="ScopeRetired"></a>
-## type [ScopeRetired](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/events.go#L60-L64>)
+## type [ScopeRetired](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/events.go#L45-L49>)
 
-ScopeRetired is emitted by discovery when a target partition leaves a connection's coverage for a control\-plane reason: the operator excluded it, the connection was deleted, or hierarchy reconciliation found the target moved or closed. Consumers retire the partition's source claims with the carried reason; it never asserts provider deletion \(see LifecycleReason\). EntityID is Provenance.PartitionKey\(\); Version continues the partition's monotonic sequence.
+ScopeRetired never asserts the partition's resources were deleted at the provider; the reason says which control\-plane change removed it.
 
 ```go
 type ScopeRetired struct {
@@ -270,13 +251,13 @@ type ScopeRetired struct {
 ```
 
 <a name="ScopeRetired.Validate"></a>
-### func \(\*ScopeRetired\) [Validate](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L152>)
+### func \(\*ScopeRetired\) [Validate](<https://github.com/greenbone/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L120>)
 
 ```go
 func (e *ScopeRetired) Validate() error
 ```
 
-Validate enforces the retirement contract: complete provenance, partition ordering key, and a reason that actually retires claims. resource\_deleted travels per\-resource in scan diffs and authorization\_lost never retires.
+
 
 Generated by [gomarkdoc](<https://github.com/princjef/gomarkdoc>)
 
