@@ -650,15 +650,6 @@ const (
 	BacksUpSourceIds = "backsUpSourceIds"
 )
 
-// Derived reachability outputs (ingressAllowSet, effectiveInbound) are written
-// ONTO the graph by the exposure engine and are deliberately NOT in this
-// registry: they are not a producer contract and a discovery client must never
-// emit them. Keeping them out of All means IsCanonical rejects them, so a client
-// that emits one by mistake routes it to Properties instead of masquerading as a
-// canonical field.
-
-// All is every canonical computed-field name, for the discovery->Computed
-// bucket routing and drift checks.
 var All = []string{
 	AdapterProvider,
 	ResourceType,
@@ -911,7 +902,6 @@ var All = []string{
 	BacksUpSourceIds,
 }
 
-// keySet is All as a set for O(1) membership.
 var keySet = func() map[string]struct{} {
 	m := make(map[string]struct{}, len(All))
 	for _, k := range All {
@@ -921,13 +911,7 @@ var keySet = func() map[string]struct{} {
 	return m
 }()
 
-// IsCanonical reports whether key is a canonical topology field (a member of
-// All). Discovery clients use it to split a flat property map into the two
-// buckets: canonical keys go to Computed (the topology contract), everything else
-// - raw provider fields and not-yet-canonical derived values - goes to Properties
-// (the raw bucket CSPM consumes later). A field crosses into Computed simply by
-// being given a computed.* constant, so incremental property work never
-// touches the split itself.
+
 func IsCanonical(key string) bool {
 	_, ok := keySet[key]
 
