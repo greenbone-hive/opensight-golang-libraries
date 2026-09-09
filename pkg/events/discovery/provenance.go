@@ -55,12 +55,11 @@ func (r LifecycleReason) IsProviderDeletion() bool { return r == ReasonResourceD
 // canonicalResourceId), so two sources observing one resource yield two
 // source claims and one asset.
 type Provenance struct {
-	SourceID       string `json:"source_id"`
-	SourceRevision int64  `json:"source_revision"`
-	TargetScopeID  string `json:"target_scope_id"`
-	RunID          string `json:"run_id"`
-	ScopeRunID     string `json:"scope_run_id"`
-	Provider       string `json:"provider"`
+	SourceID      string `json:"source_id"`
+	TargetScopeID string `json:"target_scope_id"`
+	RunID         string `json:"run_id"`
+	ScopeRunID    string `json:"scope_run_id"`
+	Provider      string `json:"provider"`
 }
 
 // PartitionKey is the event-stream identity of one target partition. Producers

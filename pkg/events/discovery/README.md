@@ -97,7 +97,7 @@ const (
 ```
 
 <a name="CollectorCoverage"></a>
-## type [CollectorCoverage](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L88-L93>)
+## type [CollectorCoverage](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L87-L92>)
 
 CollectorCoverage carries "global" as RegionOrGlobal for collectors that are not regional.
 
@@ -185,23 +185,22 @@ type ObservedResource struct {
 ```
 
 <a name="Provenance"></a>
-## type [Provenance](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L57-L64>)
+## type [Provenance](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L57-L63>)
 
 Provenance travels intact through discovery \-\> asset management \-\> exposure. SourceID is provenance, NOT identity: canonical identity is \(provider, canonicalResourceId\), so two sources observing one resource yield two source claims and one asset.
 
 ```go
 type Provenance struct {
-    SourceID       string `json:"source_id"`
-    SourceRevision int64  `json:"source_revision"`
-    TargetScopeID  string `json:"target_scope_id"`
-    RunID          string `json:"run_id"`
-    ScopeRunID     string `json:"scope_run_id"`
-    Provider       string `json:"provider"`
+    SourceID      string `json:"source_id"`
+    TargetScopeID string `json:"target_scope_id"`
+    RunID         string `json:"run_id"`
+    ScopeRunID    string `json:"scope_run_id"`
+    Provider      string `json:"provider"`
 }
 ```
 
 <a name="Provenance.PartitionKey"></a>
-### func \(\*Provenance\) [PartitionKey](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L69>)
+### func \(\*Provenance\) [PartitionKey](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L68>)
 
 ```go
 func (p *Provenance) PartitionKey() string
@@ -229,7 +228,7 @@ type ScanCompleted struct {
 ```
 
 <a name="ScanCompleted.Validate"></a>
-### func \(\*ScanCompleted\) [Validate](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L98>)
+### func \(\*ScanCompleted\) [Validate](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L97>)
 
 ```go
 func (e *ScanCompleted) Validate() error
@@ -251,7 +250,7 @@ type ScopeRetired struct {
 ```
 
 <a name="ScopeRetired.Validate"></a>
-### func \(\*ScopeRetired\) [Validate](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L120>)
+### func \(\*ScopeRetired\) [Validate](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L119>)
 
 ```go
 func (e *ScopeRetired) Validate() error
