@@ -12,9 +12,10 @@ const (
 	GCP                Provider = "gcp"
 	GreenboneAppliance Provider = "greenbone_appliance"
 	Agent              Provider = "agent"
+	ManualImport       Provider = "manual_import"
 )
 
-var All = []Provider{AWS, Azure, GCP, GreenboneAppliance, Agent}
+var All = []Provider{AWS, Azure, GCP, GreenboneAppliance, Agent, ManualImport}
 
 func Valid(p Provider) bool {
 	for _, v := range All {
