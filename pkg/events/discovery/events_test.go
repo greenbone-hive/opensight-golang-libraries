@@ -23,7 +23,7 @@ func TestEventJSONRoundTrip(t *testing.T) {
 			Version:  3,
 		},
 		Provenance: Provenance{
-			SourceID: "src-1", SourceRevision: 2,
+			SourceID:      "src-1",
 			TargetScopeID: "111111111111", RunID: "10", ScopeRunID: "77",
 			Provider: "aws",
 		},

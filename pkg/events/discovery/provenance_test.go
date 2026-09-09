@@ -14,7 +14,7 @@ import (
 
 func scan(target string, version int64, coverage CoverageStatus, resources ...ObservedResource) ScanCompleted {
 	p := Provenance{
-		SourceID: "src-1", SourceRevision: 2,
+		SourceID:      "src-1",
 		TargetScopeID: target, RunID: "10", ScopeRunID: "77", Provider: "aws",
 	}
 
