@@ -3,7 +3,7 @@
 # provider Package Documentation
 
 This package holds the canonical value set for the systems assets are discovered
-from: what an adapter connects to, and where a resource lives. Every service keys
+from: what a source connects to, and where a resource lives. Every service keys
 off these values and this one validation instead of redefining the enum, so a
 provider name never has to be translated between services.
 
@@ -13,7 +13,7 @@ a constant here alongside them rather than a parallel enum.
 ## Example Usage
 
 ```go
-p := provider.Provider(adapter.Provider)
+p := provider.Provider(source.Provider)
 if !provider.Valid(p) {
 	return fmt.Errorf("unknown provider %q", p)
 }
