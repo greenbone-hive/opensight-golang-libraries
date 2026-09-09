@@ -8,7 +8,7 @@ payloads, and both are defined here:
 | Event | Endpoint | Says |
 |---|---|---|
 | `ScanCompleted` | `POST /discovery-scan` | the partition's complete live resource set, inline |
-| `ScopeRetired` | `POST /discovery-scope-retired` | a target partition left the connection's coverage, and why |
+| `ScopeRetired` | `POST /discovery-scope-retired` | a target partition left the source's coverage, and why |
 
 Discovery computes no diff and keeps no resource state: it sends what it sees
 and the consumer reconciles against its own previous state.
@@ -142,9 +142,9 @@ type LifecycleReason string
 
 ```go
 const (
-    ReasonResourceDeleted   LifecycleReason = "resource_deleted"
-    ReasonScopeExcluded     LifecycleReason = "scope_excluded"
-    ReasonConnectionDeleted LifecycleReason = "connection_deleted"
+    ReasonResourceDeleted LifecycleReason = "resource_deleted"
+    ReasonScopeExcluded   LifecycleReason = "scope_excluded"
+    ReasonSourceDeleted   LifecycleReason = "source_deleted"
     // ReasonAuthorizationLost keeps the claim: the producer lost read access, so
     // coverage goes stale rather than the claim being retired.
     ReasonAuthorizationLost LifecycleReason = "authorization_lost"
@@ -187,16 +187,16 @@ type ObservedResource struct {
 <a name="Provenance"></a>
 ## type [Provenance](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L57-L64>)
 
-Provenance travels intact through discovery \-\> asset management \-\> exposure. ConnectionID is provenance, NOT identity: canonical identity is \(provider, canonicalResourceId\), so two connections observing one resource yield two source claims and one asset.
+Provenance travels intact through discovery \-\> asset management \-\> exposure. SourceID is provenance, NOT identity: canonical identity is \(provider, canonicalResourceId\), so two sources observing one resource yield two source claims and one asset.
 
 ```go
 type Provenance struct {
-    ConnectionID       string `json:"connection_id"`
-    ConnectionRevision int64  `json:"connection_revision"`
-    TargetScopeID      string `json:"target_scope_id"`
-    RunID              string `json:"run_id"`
-    ScopeRunID         string `json:"scope_run_id"`
-    Provider           string `json:"provider"`
+    SourceID       string `json:"source_id"`
+    SourceRevision int64  `json:"source_revision"`
+    TargetScopeID  string `json:"target_scope_id"`
+    RunID          string `json:"run_id"`
+    ScopeRunID     string `json:"scope_run_id"`
+    Provider       string `json:"provider"`
 }
 ```
 
@@ -214,7 +214,7 @@ PartitionKey is the event\-stream identity of one target partition. Producers mu
 
 ScanCompleted carries the partition's COMPLETE live resource set inline. Discovery computes no diff and keeps no resource state; the consumer reconciles against its own previous state.
 
-A resource missing from Resources is a deletion assertion ONLY when Coverage is complete. A partial or failed scan says nothing about absence, so consumers apply it upsert\-only and never reap on it. Scope exclusion, connection deletion and target moves are not absences: they travel as ScopeRetired.
+A resource missing from Resources is a deletion assertion ONLY when Coverage is complete. A partial or failed scan says nothing about absence, so consumers apply it upsert\-only and never reap on it. Scope exclusion, source deletion and target moves are not absences: they travel as ScopeRetired.
 
 ```go
 type ScanCompleted struct {

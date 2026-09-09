@@ -54,18 +54,18 @@ Package computed holds the canonical names of the normalized \`computed\` bucket
 
 ## Constants
 
-<a name="AdapterProvider"></a>Common envelope \(every node\).
+<a name="Provider"></a>Common envelope \(every node\).
 
 ```go
 const (
-    AdapterProvider = "adapterProvider"
-    ResourceType    = "resourceType"
-    ResourceID      = "resourceId"
-    AccountID       = "accountId"
-    AccountName     = "accountName"
-    OrganizationID  = "organizationId"
-    Region          = "region"
-    Zone            = "zone"
+    Provider       = "provider"
+    ResourceType   = "resourceType"
+    ResourceID     = "resourceId"
+    AccountID      = "accountId"
+    AccountName    = "accountName"
+    OrganizationID = "organizationId"
+    Region         = "region"
+    Zone           = "zone"
 )
 ```
 
@@ -720,7 +720,7 @@ const (
 
 ```go
 var All = []string{
-    AdapterProvider,
+    Provider,
     ResourceType,
     ResourceID,
     AccountID,
