@@ -27,7 +27,7 @@ func TestAllHasNoDuplicates(t *testing.T) {
 		}
 		seen[p] = struct{}{}
 	}
-	if len(All) != 4 {
-		t.Fatalf("All has %d entries, want 4 (aws, azure, gcp, greenbone_appliance)", len(All))
+	if len(All) != 5 {
+		t.Fatalf("All providers should be in list", len(All))
 	}
 }

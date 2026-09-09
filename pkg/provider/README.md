@@ -47,11 +47,11 @@ import "github.com/greenbone-hive/opensight-golang-libraries/pkg/provider"
 <a name="All"></a>
 
 ```go
-var All = []Provider{AWS, Azure, GCP, GreenboneAppliance}
+var All = []Provider{AWS, Azure, GCP, GreenboneAppliance, Agent}
 ```
 
 <a name="Valid"></a>
-## func [Valid](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/provider/provider.go#L18>)
+## func [Valid](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/provider/provider.go#L19>)
 
 ```go
 func Valid(p Provider) bool
@@ -76,6 +76,7 @@ const (
     Azure              Provider = "azure"
     GCP                Provider = "gcp"
     GreenboneAppliance Provider = "greenbone_appliance"
+    Agent              Provider = "agent"
 )
 ```
 
