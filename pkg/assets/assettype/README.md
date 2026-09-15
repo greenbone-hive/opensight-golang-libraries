@@ -50,6 +50,7 @@ import "github.com/greenbone-hive/opensight-golang-libraries/pkg/assets/assettyp
 var All = []Type{
     Unknown,
     Server,
+    Host,
     VirtualMachine,
     Endpoint,
     ContainerHost,
@@ -209,7 +210,7 @@ var All = []Type{
 ```
 
 <a name="CategoryOf"></a>
-## func [CategoryOf](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/assets/assettype/assettype.go#L492>)
+## func [CategoryOf](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/assets/assettype/assettype.go#L495>)
 
 ```go
 func CategoryOf(t Type) assetcategory.Category
@@ -218,7 +219,7 @@ func CategoryOf(t Type) assetcategory.Category
 
 
 <a name="IsKnown"></a>
-## func [IsKnown](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/assets/assettype/assettype.go#L500>)
+## func [IsKnown](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/assets/assettype/assettype.go#L503>)
 
 ```go
 func IsKnown(t Type) bool
@@ -241,6 +242,7 @@ type Type string
 const (
     Unknown                   Type = "Unknown"
     Server                    Type = "Server"
+    Host                      Type = "Host"
     VirtualMachine            Type = "VirtualMachine"
     Endpoint                  Type = "Endpoint"
     ContainerHost             Type = "ContainerHost"
