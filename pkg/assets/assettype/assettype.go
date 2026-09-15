@@ -11,6 +11,7 @@ type Type string
 const (
 	Unknown                   Type = "Unknown"
 	Server                    Type = "Server"
+	Host                      Type = "Host"
 	VirtualMachine            Type = "VirtualMachine"
 	Endpoint                  Type = "Endpoint"
 	ContainerHost             Type = "ContainerHost"
@@ -172,6 +173,7 @@ const (
 var All = []Type{
 	Unknown,
 	Server,
+	Host,
 	VirtualMachine,
 	Endpoint,
 	ContainerHost,
@@ -332,6 +334,7 @@ var All = []Type{
 var categoryByType = map[Type]assetcategory.Category{
 	Unknown:                   assetcategory.Unknown,
 	Server:                    assetcategory.Compute,
+	Host:                      assetcategory.Compute,
 	VirtualMachine:            assetcategory.Compute,
 	Endpoint:                  assetcategory.Compute,
 	ContainerHost:             assetcategory.Compute,
