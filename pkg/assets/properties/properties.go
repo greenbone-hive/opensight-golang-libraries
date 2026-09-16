@@ -2,18 +2,18 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-// Package computed holds the canonical names of the normalized `computed` bucket
+// Package properties holds the canonical names of the normalized `properties`
 // fields (the topology node-property contract): the keys discovery emits and the
 // topology graph-build reads. Using these constants instead of string literals
 // makes a misspelled or divergent key (parentID vs parentId, vpcId vs networkId,
 // account_id vs accountId) a compile error instead of a silently broken graph
 // join. Raw provider-specific keys are NOT here: they are not the contract, and
 // a key earns a constant only once both sides agree on it.
-package computed
+package properties
 
 // Common envelope (every node).
 const (
-	Provider = "provider"
+	Provider       = "provider"
 	ResourceType   = "resourceType"
 	ResourceID     = "resourceId"
 	AccountID      = "accountId"
@@ -239,9 +239,9 @@ const (
 // are producer-emitted normalized fields that reachability reads as a
 // SECOND ingress gate, independent of any NSG: a public endpoint is only reachable
 // when its own allow-list admits the peer. They are registered here AHEAD of the
-// clients that emit them so the discovery bucket split routes them to Computed the moment
-// a client emits one; an unregistered key would fall to Properties and be invisible
-// to reachability (a false-negative public exposure).
+// clients that emit them so a client can emit them the moment it needs to; an
+// unregistered key is dropped by discovery and would be invisible to reachability
+// (a false-negative public exposure).
 const (
 	// PublicNetworkAccess is the data-plane public gate (enabled | disabled |
 	// restricted): RDS PubliclyAccessible, Azure publicNetworkAccess, GCP

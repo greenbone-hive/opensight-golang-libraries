@@ -33,7 +33,7 @@ type ScanCompleted struct {
 }
 
 // ObservedResource carries the resource in Body as marshaled JSON: name,
-// resourceName, assetType, computed, tags and identifiers.
+// resourceName, assetType, properties, tags and identifiers.
 type ObservedResource struct {
 	Type               string          `json:"type"`
 	ProviderResourceID string          `json:"provider_resource_id"`

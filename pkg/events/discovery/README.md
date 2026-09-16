@@ -174,7 +174,7 @@ RetiresClaim is false for resource deletion: that travels per\-resource in a sca
 <a name="ObservedResource"></a>
 ## type [ObservedResource](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/events/discovery/events.go#L37-L41>)
 
-ObservedResource carries the resource in Body as marshaled JSON: name, resourceName, assetType, computed, tags and identifiers.
+ObservedResource carries the resource in Body as marshaled JSON: name, resourceName, assetType, properties, tags and identifiers.
 
 ```go
 type ObservedResource struct {
