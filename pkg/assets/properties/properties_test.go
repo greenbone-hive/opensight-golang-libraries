@@ -4,7 +4,12 @@
 
 package properties
 
-import "testing"
+import (
+	"go/ast"
+	"go/parser"
+	"go/token"
+	"testing"
+)
 
 func TestIsCanonicalMatchesAll(t *testing.T) {
 	for _, k := range All {
@@ -51,6 +56,43 @@ func TestDerivedGraphFieldsAreNotCanonical(t *testing.T) {
 	for _, k := range []string{"ingressAllowSet", "effectiveInbound"} {
 		if IsCanonical(k) {
 			t.Errorf("derived graph-only field %q must not be canonical (it is written by exposure, never emitted by a producer)", k)
+		}
+	}
+}
+
+// TestAllListsEveryConstant reads the package source so that a constant added
+// without an All entry fails here instead of being dropped by every producer
+// that filters on IsCanonical.
+func TestAllListsEveryConstant(t *testing.T) {
+	f, err := parser.ParseFile(token.NewFileSet(), "properties.go", nil, parser.SkipObjectResolution)
+	if err != nil {
+		t.Fatal(err)
+	}
+	declared := map[string]string{}
+	for _, decl := range f.Decls {
+		gd, ok := decl.(*ast.GenDecl)
+		if !ok || gd.Tok != token.CONST {
+			continue
+		}
+		for _, spec := range gd.Specs {
+			vs := spec.(*ast.ValueSpec)
+			for i, name := range vs.Names {
+				lit, ok := vs.Values[i].(*ast.BasicLit)
+				if !ok || lit.Kind != token.STRING {
+					t.Fatalf("%s is not a string literal", name.Name)
+				}
+				declared[lit.Value[1:len(lit.Value)-1]] = name.Name
+			}
+		}
+	}
+	for key, name := range declared {
+		if !IsCanonical(key) {
+			t.Errorf("%s (%q) is declared but missing from All", name, key)
+		}
+	}
+	for _, key := range All {
+		if _, ok := declared[key]; !ok {
+			t.Errorf("All lists %q, which is not a declared constant", key)
 		}
 	}
 }
