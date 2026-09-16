@@ -10,7 +10,7 @@
 The code maintained in this repository is used by the Greenbone OpenSight Backend Components written in GoLang.
 
 The following functionalities are provided:
-* [assets](pkg/assets/README.md) - the canonical asset taxonomy: category, type, identity claims and computed-value keys
+* [assets](pkg/assets/README.md) - the canonical asset taxonomy: category, type, identity claims and property keys
 * [configReader](pkg/configReader/README.md) - reads the configuration based on environment variables with predefined defaults
 * [dbcrypt](pkg/dbcrypt/README.md) - provides encryption / decryption for fields of entities persisted with GORM
 * [events](pkg/events/README.md) - the envelope every event carries, with one subpackage per producer-consumer contract

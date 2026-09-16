@@ -9,5 +9,5 @@ There is no code at this level, only the subpackages.
 Subpackages:
 * [assetcategory](assetcategory/README.md) - the coarse grouping an asset type belongs to
 * [assettype](assettype/README.md) - the provider-neutral asset type catalog, each type carrying its category
-* [computed](computed/README.md) - the canonical keys for values derived from a discovered resource
+* [properties](properties/README.md) - the canonical keys of the normalized fields a discovered resource carries
 * [identifier](identifier/README.md) - the asset-identity claim types
