@@ -25,9 +25,9 @@ const (
 type LifecycleReason string
 
 const (
-	ReasonResourceDeleted LifecycleReason = "resource_deleted"
-	ReasonScopeExcluded   LifecycleReason = "scope_excluded"
-	ReasonSourceDeleted   LifecycleReason = "source_deleted"
+	ReasonResourceDeleted  LifecycleReason = "resource_deleted"
+	ReasonScopeExcluded    LifecycleReason = "scope_excluded"
+	ReasonConnectorDeleted LifecycleReason = "connector_deleted"
 	// ReasonAuthorizationLost keeps the claim: the producer lost read access, so
 	// coverage goes stale rather than the claim being retired.
 	ReasonAuthorizationLost LifecycleReason = "authorization_lost"
@@ -39,7 +39,7 @@ const (
 // scan, not as a retirement.
 func (r LifecycleReason) RetiresClaim() bool {
 	switch r {
-	case ReasonScopeExcluded, ReasonSourceDeleted, ReasonTargetMoved, ReasonTargetClosed:
+	case ReasonScopeExcluded, ReasonConnectorDeleted, ReasonTargetMoved, ReasonTargetClosed:
 		return true
 	case ReasonResourceDeleted, ReasonAuthorizationLost:
 		return false
@@ -51,11 +51,11 @@ func (r LifecycleReason) RetiresClaim() bool {
 func (r LifecycleReason) IsProviderDeletion() bool { return r == ReasonResourceDeleted }
 
 // Provenance travels intact through discovery -> asset management -> exposure.
-// SourceID is provenance, NOT identity: canonical identity is (provider,
-// canonicalResourceId), so two sources observing one resource yield two
-// source claims and one asset.
+// ConnectorID is provenance, NOT identity: canonical identity is (provider,
+// canonicalResourceId), so two connectors observing one resource yield two
+// connector claims and one asset.
 type Provenance struct {
-	SourceID      string `json:"source_id"`
+	ConnectorID   string `json:"connector_id"`
 	TargetScopeID string `json:"target_scope_id"`
 	RunID         string `json:"run_id"`
 	ScopeRunID    string `json:"scope_run_id"`
@@ -66,13 +66,13 @@ type Provenance struct {
 // must set events.Meta.EntityID to it: partitions are ordered independently and
 // must never gate each other.
 func (p *Provenance) PartitionKey() string {
-	return p.SourceID + "|" + p.TargetScopeID
+	return p.ConnectorID + "|" + p.TargetScopeID
 }
 
 func (p *Provenance) validate() error {
 	switch {
-	case p.SourceID == "":
-		return errors.New("discovery: provenance missing source_id")
+	case p.ConnectorID == "":
+		return errors.New("discovery: provenance missing connector_id")
 	case p.TargetScopeID == "":
 		return errors.New("discovery: provenance missing target_scope_id")
 	case p.Provider == "":

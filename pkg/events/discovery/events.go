@@ -20,7 +20,7 @@ import (
 // A resource missing from Resources is a deletion assertion ONLY when Coverage
 // is complete. A partial or failed scan says nothing about absence, so
 // consumers apply it upsert-only and never reap on it. Scope exclusion,
-// source deletion and target moves are not absences: they travel as
+// connector deletion and target moves are not absences: they travel as
 // ScopeRetired.
 type ScanCompleted struct {
 	events.Meta
