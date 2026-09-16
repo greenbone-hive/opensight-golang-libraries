@@ -8,7 +8,7 @@ payloads, and both are defined here:
 | Event | Endpoint | Says |
 |---|---|---|
 | `ScanCompleted` | `POST /discovery-scan` | the partition's complete live resource set, inline |
-| `ScopeRetired` | `POST /discovery-scope-retired` | a target partition left the source's coverage, and why |
+| `ScopeRetired` | `POST /discovery-scope-retired` | a target partition left the connector's coverage, and why |
 
 Discovery computes no diff and keeps no resource state: it sends what it sees
 and the consumer reconciles against its own previous state.
@@ -187,11 +187,11 @@ type ObservedResource struct {
 <a name="Provenance"></a>
 ## type [Provenance](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/events/discovery/provenance.go#L57-L63>)
 
-Provenance travels intact through discovery \-\> asset management \-\> exposure. SourceID is provenance, NOT identity: canonical identity is \(provider, canonicalResourceId\), so two sources observing one resource yield two source claims and one asset.
+Provenance travels intact through discovery \-\> asset management \-\> exposure. ConnectorID is provenance, NOT identity: canonical identity is \(provider, canonicalResourceId\), so two connectors observing one resource yield two connector claims and one asset.
 
 ```go
 type Provenance struct {
-    SourceID      string `json:"source_id"`
+    ConnectorID   string `json:"connector_id"`
     TargetScopeID string `json:"target_scope_id"`
     RunID         string `json:"run_id"`
     ScopeRunID    string `json:"scope_run_id"`
