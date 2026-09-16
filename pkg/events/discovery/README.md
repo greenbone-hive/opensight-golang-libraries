@@ -142,9 +142,9 @@ type LifecycleReason string
 
 ```go
 const (
-    ReasonResourceDeleted LifecycleReason = "resource_deleted"
-    ReasonScopeExcluded   LifecycleReason = "scope_excluded"
-    ReasonSourceDeleted   LifecycleReason = "source_deleted"
+    ReasonResourceDeleted  LifecycleReason = "resource_deleted"
+    ReasonScopeExcluded    LifecycleReason = "scope_excluded"
+    ReasonConnectorDeleted LifecycleReason = "connector_deleted"
     // ReasonAuthorizationLost keeps the claim: the producer lost read access, so
     // coverage goes stale rather than the claim being retired.
     ReasonAuthorizationLost LifecycleReason = "authorization_lost"
@@ -213,7 +213,7 @@ PartitionKey is the event\-stream identity of one target partition. Producers mu
 
 ScanCompleted carries the partition's COMPLETE live resource set inline. Discovery computes no diff and keeps no resource state; the consumer reconciles against its own previous state.
 
-A resource missing from Resources is a deletion assertion ONLY when Coverage is complete. A partial or failed scan says nothing about absence, so consumers apply it upsert\-only and never reap on it. Scope exclusion, source deletion and target moves are not absences: they travel as ScopeRetired.
+A resource missing from Resources is a deletion assertion ONLY when Coverage is complete. A partial or failed scan says nothing about absence, so consumers apply it upsert\-only and never reap on it. Scope exclusion, connector deletion and target moves are not absences: they travel as ScopeRetired.
 
 ```go
 type ScanCompleted struct {

@@ -25,9 +25,9 @@ const (
 type LifecycleReason string
 
 const (
-	ReasonResourceDeleted LifecycleReason = "resource_deleted"
-	ReasonScopeExcluded   LifecycleReason = "scope_excluded"
-	ReasonSourceDeleted   LifecycleReason = "source_deleted"
+	ReasonResourceDeleted  LifecycleReason = "resource_deleted"
+	ReasonScopeExcluded    LifecycleReason = "scope_excluded"
+	ReasonConnectorDeleted LifecycleReason = "connector_deleted"
 	// ReasonAuthorizationLost keeps the claim: the producer lost read access, so
 	// coverage goes stale rather than the claim being retired.
 	ReasonAuthorizationLost LifecycleReason = "authorization_lost"
@@ -39,7 +39,7 @@ const (
 // scan, not as a retirement.
 func (r LifecycleReason) RetiresClaim() bool {
 	switch r {
-	case ReasonScopeExcluded, ReasonSourceDeleted, ReasonTargetMoved, ReasonTargetClosed:
+	case ReasonScopeExcluded, ReasonConnectorDeleted, ReasonTargetMoved, ReasonTargetClosed:
 		return true
 	case ReasonResourceDeleted, ReasonAuthorizationLost:
 		return false

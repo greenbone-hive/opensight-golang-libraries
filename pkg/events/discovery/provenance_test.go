@@ -116,7 +116,7 @@ func TestLifecycleReasonSemantics(t *testing.T) {
 		t.Fatal("resource_deleted must assert provider deletion")
 	}
 	for _, r := range []LifecycleReason{
-		ReasonScopeExcluded, ReasonSourceDeleted,
+		ReasonScopeExcluded, ReasonConnectorDeleted,
 		ReasonAuthorizationLost, ReasonTargetMoved, ReasonTargetClosed,
 	} {
 		if r.IsProviderDeletion() {
@@ -124,7 +124,7 @@ func TestLifecycleReasonSemantics(t *testing.T) {
 		}
 	}
 	for _, r := range []LifecycleReason{
-		ReasonScopeExcluded, ReasonSourceDeleted,
+		ReasonScopeExcluded, ReasonConnectorDeleted,
 		ReasonTargetMoved, ReasonTargetClosed,
 	} {
 		if !r.RetiresClaim() {
