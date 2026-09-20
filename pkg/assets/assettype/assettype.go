@@ -489,19 +489,12 @@ var categoryByType = map[Type]assetcategory.Category{
 	AppConfiguration:          assetcategory.Integration,
 }
 
-// CategoryOf returns the category a type belongs to, and the empty category
-// for a type that is not in the catalog. There is no placeholder type or
-// category: a caller that has to tell the two apart asks IsKnown.
 func CategoryOf(t Type) assetcategory.Category {
 	return categoryByType[t]
 }
 
 func IsKnown(t Type) bool { _, ok := categoryByType[t]; return ok }
 
-// Machines are the types that are a machine with an operating system: the
-// ones an agent can run on and a network scanner can log in to. The Compute
-// category cannot stand in for this list, it also holds app services, batch
-// jobs and launch templates.
 var Machines = []Type{
 	Server,
 	Host,

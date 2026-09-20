@@ -210,7 +210,7 @@ var All = []Type{
 }
 ```
 
-<a name="Machines"></a>Machines are the types that are a machine with an operating system: the ones an agent can run on and a network scanner can log in to. The Compute category cannot stand in for this list, it also holds app services, batch jobs and launch templates.
+<a name="Machines"></a>
 
 ```go
 var Machines = []Type{
@@ -224,16 +224,16 @@ var Machines = []Type{
 ```
 
 <a name="CategoryOf"></a>
-## func [CategoryOf](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/assets/assettype/assettype.go#L495>)
+## func [CategoryOf](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/assets/assettype/assettype.go#L492>)
 
 ```go
 func CategoryOf(t Type) assetcategory.Category
 ```
 
-CategoryOf returns the category a type belongs to, and the empty category for a type that is not in the catalog. There is no placeholder type or category: a caller that has to tell the two apart asks IsKnown.
+
 
 <a name="IsKnown"></a>
-## func [IsKnown](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/assets/assettype/assettype.go#L499>)
+## func [IsKnown](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/assets/assettype/assettype.go#L496>)
 
 ```go
 func IsKnown(t Type) bool
@@ -242,7 +242,7 @@ func IsKnown(t Type) bool
 
 
 <a name="IsMachine"></a>
-## func [IsMachine](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/assets/assettype/assettype.go#L514>)
+## func [IsMachine](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/assets/assettype/assettype.go#L507>)
 
 ```go
 func IsMachine(t Type) bool
