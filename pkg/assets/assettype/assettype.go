@@ -9,7 +9,6 @@ import "github.com/greenbone-hive/opensight-golang-libraries/pkg/assets/assetcat
 type Type string
 
 const (
-	Unknown                   Type = "Unknown"
 	Server                    Type = "Server"
 	Host                      Type = "Host"
 	VirtualMachine            Type = "VirtualMachine"
@@ -171,7 +170,6 @@ const (
 )
 
 var All = []Type{
-	Unknown,
 	Server,
 	Host,
 	VirtualMachine,
@@ -332,7 +330,6 @@ var All = []Type{
 }
 
 var categoryByType = map[Type]assetcategory.Category{
-	Unknown:                   assetcategory.Unknown,
 	Server:                    assetcategory.Compute,
 	Host:                      assetcategory.Compute,
 	VirtualMachine:            assetcategory.Compute,
@@ -493,11 +490,26 @@ var categoryByType = map[Type]assetcategory.Category{
 }
 
 func CategoryOf(t Type) assetcategory.Category {
-	if c, ok := categoryByType[t]; ok {
-		return c
-	}
-
-	return assetcategory.Unknown
+	return categoryByType[t]
 }
 
 func IsKnown(t Type) bool { _, ok := categoryByType[t]; return ok }
+
+var Machines = []Type{
+	Server,
+	Host,
+	VirtualMachine,
+	Endpoint,
+	ContainerHost,
+	VirtualDesktop,
+}
+
+func IsMachine(t Type) bool {
+	for _, m := range Machines {
+		if t == m {
+			return true
+		}
+	}
+
+	return false
+}

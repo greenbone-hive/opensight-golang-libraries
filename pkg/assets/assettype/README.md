@@ -4,8 +4,9 @@
 
 This package holds the canonical asset types: the fixed, provider-neutral catalog
 plus each type's category. Callers write `assettype.VirtualMachine` rather than
-the string. `Unknown` is the zero-value fallback for a resource whose type has
-not been mapped.
+the string. There is no placeholder type: a resource whose type is not in the
+catalog has no type, `IsKnown` reports it and `CategoryOf` returns no category.
+`Machines` lists the types that are a machine with an operating system.
 
 Categories come from the sibling
 [assetcategory](../assetcategory/README.md) package.
@@ -39,6 +40,7 @@ import "github.com/greenbone-hive/opensight-golang-libraries/pkg/assets/assettyp
 - [Variables](<#variables>)
 - [func CategoryOf\(t Type\) assetcategory.Category](<#CategoryOf>)
 - [func IsKnown\(t Type\) bool](<#IsKnown>)
+- [func IsMachine\(t Type\) bool](<#IsMachine>)
 - [type Type](<#Type>)
 
 
@@ -48,7 +50,6 @@ import "github.com/greenbone-hive/opensight-golang-libraries/pkg/assets/assettyp
 
 ```go
 var All = []Type{
-    Unknown,
     Server,
     Host,
     VirtualMachine,
@@ -209,8 +210,21 @@ var All = []Type{
 }
 ```
 
+<a name="Machines"></a>
+
+```go
+var Machines = []Type{
+    Server,
+    Host,
+    VirtualMachine,
+    Endpoint,
+    ContainerHost,
+    VirtualDesktop,
+}
+```
+
 <a name="CategoryOf"></a>
-## func [CategoryOf](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/assets/assettype/assettype.go#L495>)
+## func [CategoryOf](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/assets/assettype/assettype.go#L492>)
 
 ```go
 func CategoryOf(t Type) assetcategory.Category
@@ -219,10 +233,19 @@ func CategoryOf(t Type) assetcategory.Category
 
 
 <a name="IsKnown"></a>
-## func [IsKnown](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/assets/assettype/assettype.go#L503>)
+## func [IsKnown](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/assets/assettype/assettype.go#L496>)
 
 ```go
 func IsKnown(t Type) bool
+```
+
+
+
+<a name="IsMachine"></a>
+## func [IsMachine](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/assets/assettype/assettype.go#L507>)
+
+```go
+func IsMachine(t Type) bool
 ```
 
 
@@ -236,11 +259,10 @@ func IsKnown(t Type) bool
 type Type string
 ```
 
-<a name="Unknown"></a>
+<a name="Server"></a>
 
 ```go
 const (
-    Unknown                   Type = "Unknown"
     Server                    Type = "Server"
     Host                      Type = "Host"
     VirtualMachine            Type = "VirtualMachine"
