@@ -7,7 +7,6 @@ package assetcategory
 type Category string
 
 const (
-	Unknown         Category = "Unknown"
 	Compute         Category = "Compute"
 	Serverless      Category = "Serverless"
 	Containers      Category = "Containers"
@@ -36,7 +35,7 @@ const (
 )
 
 var All = []Category{
-	Unknown, Compute, Serverless, Containers, Network, IpAddress, Dns,
+	Compute, Serverless, Containers, Network, IpAddress, Dns,
 	LoadBalancing, ApiGateway, Cdn, EdgeSecurity, Storage, Database, Analytics,
 	Messaging, Identity, Secrets, SecurityTooling, Observability, Tenancy,
 	Geography, Governance, Migration, MachineLearning, DataProtection, Integration,

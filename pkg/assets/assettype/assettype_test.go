@@ -28,8 +28,8 @@ func TestEveryTypeHasACategory(t *testing.T) {
 		if !IsKnown(ty) {
 			t.Errorf("type %q is missing from categoryByType", ty)
 		}
-		if ty != Unknown && CategoryOf(ty) == assetcategory.Unknown {
-			t.Errorf("type %q maps to the Unknown category", ty)
+		if CategoryOf(ty) == "" {
+			t.Errorf("type %q has no category", ty)
 		}
 	}
 	if len(categoryByType) != len(All) {
@@ -37,11 +37,34 @@ func TestEveryTypeHasACategory(t *testing.T) {
 	}
 }
 
-func TestUnknownTypeFallsThrough(t *testing.T) {
-	if IsKnown("NotARealType") {
-		t.Error("IsKnown should be false for a type not in the catalog")
+func TestATypeOutsideTheCatalogHasNoCategory(t *testing.T) {
+	for _, ty := range []Type{"NotARealType", "Unknown", ""} {
+		if IsKnown(ty) {
+			t.Errorf("IsKnown(%q) should be false", ty)
+		}
+		if got := CategoryOf(ty); got != "" {
+			t.Errorf("CategoryOf(%q) = %q, want no category", ty, got)
+		}
 	}
-	if CategoryOf("NotARealType") != assetcategory.Unknown {
-		t.Error("CategoryOf should return Unknown for a type not in the catalog")
+}
+
+func TestEveryMachineIsAComputeTypeInTheCatalog(t *testing.T) {
+	seen := map[Type]struct{}{}
+	for _, m := range Machines {
+		if _, dup := seen[m]; dup {
+			t.Errorf("Machines lists %q more than once", m)
+		}
+		seen[m] = struct{}{}
+		if CategoryOf(m) != assetcategory.Compute {
+			t.Errorf("machine %q is in category %q, want Compute", m, CategoryOf(m))
+		}
+		if !IsMachine(m) {
+			t.Errorf("IsMachine(%q) should be true", m)
+		}
+	}
+	for _, ty := range []Type{AppService, BatchJob, LaunchTemplate, ObjectStorage, "NotARealType"} {
+		if IsMachine(ty) {
+			t.Errorf("IsMachine(%q) should be false", ty)
+		}
 	}
 }

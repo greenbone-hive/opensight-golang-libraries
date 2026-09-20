@@ -45,7 +45,7 @@ import "github.com/greenbone-hive/opensight-golang-libraries/pkg/assets/assetcat
 
 ```go
 var All = []Category{
-    Unknown, Compute, Serverless, Containers, Network, IpAddress, Dns,
+    Compute, Serverless, Containers, Network, IpAddress, Dns,
     LoadBalancing, ApiGateway, Cdn, EdgeSecurity, Storage, Database, Analytics,
     Messaging, Identity, Secrets, SecurityTooling, Observability, Tenancy,
     Geography, Governance, Migration, MachineLearning, DataProtection, Integration,
@@ -61,11 +61,10 @@ var All = []Category{
 type Category string
 ```
 
-<a name="Unknown"></a>
+<a name="Compute"></a>
 
 ```go
 const (
-    Unknown         Category = "Unknown"
     Compute         Category = "Compute"
     Serverless      Category = "Serverless"
     Containers      Category = "Containers"
