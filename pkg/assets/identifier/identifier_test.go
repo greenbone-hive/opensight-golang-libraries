@@ -25,7 +25,7 @@ func TestAllHasNoDuplicates(t *testing.T) {
 // to All, keeping the iterable set complete for downstream validation.
 func TestAllContainsEveryConstant(t *testing.T) {
 	declared := []Type{
-		Hostname, FQDN, IPv4, IPv6, MACAddress, BiosUUID, SerialNumber, ProviderResourceID,
+		Hostname, FQDN, IPv4, IPv6, MACAddress, BiosUUID, ProviderResourceID,
 	}
 	if len(All) != len(declared) {
 		t.Fatalf("All has %d entries, declared constants %d: add the new type to All", len(All), len(declared))
