@@ -13,7 +13,6 @@ const (
 	IPv6               Type = "ipv6"
 	MACAddress         Type = "mac"
 	BiosUUID           Type = "bios_uuid"
-	SerialNumber       Type = "serial"
 	ProviderResourceID Type = "provider_resource_id"
 )
 
@@ -24,7 +23,6 @@ var All = []Type{
 	IPv6,
 	MACAddress,
 	BiosUUID,
-	SerialNumber,
 	ProviderResourceID,
 }
 

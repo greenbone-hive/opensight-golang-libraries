@@ -3,7 +3,7 @@
 # identifier Package Documentation
 
 This package holds the canonical asset-identity claim types: hostname, fqdn,
-ipv4, ipv6, mac, bios_uuid, serial and provider_resource_id. The constants are
+ipv4, ipv6, mac, bios_uuid and provider_resource_id. The constants are
 the exact strings stored and matched end to end, so a claim never needs
 translating between the service that emits it and the one that reconciles it.
 
@@ -51,7 +51,6 @@ var All = []Type{
     IPv6,
     MACAddress,
     BiosUUID,
-    SerialNumber,
     ProviderResourceID,
 }
 ```
@@ -84,7 +83,6 @@ const (
     IPv6               Type = "ipv6"
     MACAddress         Type = "mac"
     BiosUUID           Type = "bios_uuid"
-    SerialNumber       Type = "serial"
     ProviderResourceID Type = "provider_resource_id"
 )
 ```
