@@ -68,3 +68,32 @@ func TestEveryMachineIsAComputeTypeInTheCatalog(t *testing.T) {
 		}
 	}
 }
+
+func TestEveryBillableTypeIsInTheCatalog(t *testing.T) {
+	seen := map[Type]struct{}{}
+	for _, b := range Billable {
+		if _, dup := seen[b]; dup {
+			t.Errorf("Billable lists %q more than once", b)
+		}
+		seen[b] = struct{}{}
+		if !IsKnown(b) {
+			t.Errorf("billable type %q is not in the catalog", b)
+		}
+		if !IsBillable(b) {
+			t.Errorf("IsBillable(%q) should be true", b)
+		}
+	}
+	for _, m := range Machines {
+		if !IsBillable(m) {
+			t.Errorf("machine %q is not billable", m)
+		}
+	}
+	for _, ty := range []Type{
+		VirtualNetwork, UserIdentity, BlockStorageSnapshot,
+		ArchiveStorage, MlWorkspace, Account, "NotARealType",
+	} {
+		if IsBillable(ty) {
+			t.Errorf("IsBillable(%q) should be false", ty)
+		}
+	}
+}
