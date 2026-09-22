@@ -7,6 +7,9 @@ plus each type's category. Callers write `assettype.VirtualMachine` rather than
 the string. There is no placeholder type: a resource whose type is not in the
 catalog has no type, `IsKnown` reports it and `CategoryOf` returns no category.
 `Machines` lists the types that are a machine with an operating system.
+`Billable` lists the types a license counts; `IsBillable` reports one type. Which
+of them count once, at what ratio, and only while active is the consuming
+service's policy, not part of the catalog, so it does not live here.
 
 Categories come from the sibling
 [assetcategory](../assetcategory/README.md) package.
@@ -20,6 +23,10 @@ category := assettype.CategoryOf(t) // assetcategory.Compute
 
 if !assettype.IsKnown(incoming) {
 	log.Warn().Str("type", string(incoming)).Msg("unmapped asset type")
+}
+
+if assettype.IsBillable(t) {
+	licensed++
 }
 ```
 
@@ -39,6 +46,7 @@ import "github.com/greenbone-hive/opensight-golang-libraries/pkg/assets/assettyp
 
 - [Variables](<#variables>)
 - [func CategoryOf\(t Type\) assetcategory.Category](<#CategoryOf>)
+- [func IsBillable\(t Type\) bool](<#IsBillable>)
 - [func IsKnown\(t Type\) bool](<#IsKnown>)
 - [func IsMachine\(t Type\) bool](<#IsMachine>)
 - [type Type](<#Type>)
@@ -210,6 +218,33 @@ var All = []Type{
 }
 ```
 
+<a name="Billable"></a>
+
+```go
+var Billable = []Type{
+    Server,
+    Host,
+    VirtualMachine,
+    Endpoint,
+    ContainerHost,
+    AppService,
+    VirtualDesktop,
+    ServerlessFunction,
+    KubernetesCluster,
+    ContainerService,
+    ContainerRegistry,
+    FileStorage,
+    ObjectStorage,
+    DatabaseServer,
+    DatabaseCluster,
+    DatabaseNoSql,
+    DataWarehouse,
+    Cache,
+    SearchService,
+    DataLake,
+}
+```
+
 <a name="Machines"></a>
 
 ```go
@@ -228,6 +263,15 @@ var Machines = []Type{
 
 ```go
 func CategoryOf(t Type) assetcategory.Category
+```
+
+
+
+<a name="IsBillable"></a>
+## func [IsBillable](<https://github.com/greenbone-hive/opensight-golang-libraries/blob/main/pkg/assets/assettype/assettype.go#L540>)
+
+```go
+func IsBillable(t Type) bool
 ```
 
 

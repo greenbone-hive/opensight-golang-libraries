@@ -513,3 +513,36 @@ func IsMachine(t Type) bool {
 
 	return false
 }
+
+var Billable = []Type{
+	Server,
+	Host,
+	VirtualMachine,
+	Endpoint,
+	ContainerHost,
+	AppService,
+	VirtualDesktop,
+	ServerlessFunction,
+	KubernetesCluster,
+	ContainerService,
+	ContainerRegistry,
+	FileStorage,
+	ObjectStorage,
+	DatabaseServer,
+	DatabaseCluster,
+	DatabaseNoSql,
+	DataWarehouse,
+	Cache,
+	SearchService,
+	DataLake,
+}
+
+func IsBillable(t Type) bool {
+	for _, b := range Billable {
+		if t == b {
+			return true
+		}
+	}
+
+	return false
+}
