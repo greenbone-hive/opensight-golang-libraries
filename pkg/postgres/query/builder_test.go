@@ -896,3 +896,39 @@ func Test_NewPostgresQueryBuilder(t *testing.T) {
 		})
 	}
 }
+
+// `_` and `%` in the value of a negated operator are text, not wildcards.
+func Test_PostgresQueryBuilder_Build_EscapesWildcardsOfNegatedOperators(t *testing.T) {
+	literal := TestDoc{ID: 1, String: "50%_off"}
+	lookalike := TestDoc{ID: 2, String: "50XYoff"} // what `50%_off` matches as a pattern
+
+	db := pgtesting.NewDB(t, migrationsFS, migrationDir)
+	repo := NewTestRepository(db)
+	for _, doc := range []TestDoc{literal, lookalike} {
+		require.NoError(t, repo.CreateTestDoc(&doc), "failed to create test document")
+	}
+
+	for _, operator := range []filter.CompareOperator{
+		filter.CompareOperatorDoesNotContain,
+		filter.CompareOperatorDoesNotBeginWith,
+	} {
+		t.Run(string(operator), func(t *testing.T) {
+			builder, err := NewPostgresQueryBuilder(Settings{
+				FilterFieldMapping:      fieldMapping,
+				SortingTieBreakerColumn: sortingTieBreakerColumn,
+			})
+			require.NoError(t, err, "failed to create Postgres query builder")
+			conditionalQuery, args, err := builder.Build(singleFilter(filter.RequestField{
+				Name:     "stringField",
+				Operator: operator,
+				Value:    literal.String,
+			}))
+			require.NoError(t, err, "unexpected error building query")
+
+			gotDocs, err := repo.ListTestDocs(unfilteredListTestypesQuery+` `+conditionalQuery, args)
+			require.NoError(t, err, "failed to list documents")
+			require.Len(t, gotDocs, 1)
+			assert.Equal(t, lookalike.ID, gotDocs[0].ID)
+		})
+	}
+}
