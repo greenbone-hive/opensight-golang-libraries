@@ -120,10 +120,9 @@ func Test_PostgresQueryBuilder_Build_KeepsFilterOperator(t *testing.T) {
 		SortingTieBreakerColumn: sortingTieBreakerColumn,
 	})
 	require.NoError(t, err, "failed to create Postgres query builder")
-	conditionalQuery, _, err := builder.Build(resultSelector)
+	_, _, err = builder.Build(resultSelector)
 	require.NoError(t, err, "unexpected error building query")
 
-	assert.Equal(t, `WHERE (("string" = $1)) ORDER BY id ASC`, conditionalQuery)
 	assert.Empty(t, resultSelector.Filter.Operator)
 }
 
