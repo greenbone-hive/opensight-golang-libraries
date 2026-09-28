@@ -53,17 +53,18 @@ func (qb *Builder) addFilters(request *filter.Request) (args []any, err error) {
 	if request == nil || len(request.Fields) == 0 {
 		return nil, nil
 	}
-	if request.Operator == "" && len(request.Fields) == 1 { // for single filter `Operator` is not relevant
-		request.Operator = filter.LogicOperatorAnd
+	operator := request.Operator
+	if operator == "" && len(request.Fields) == 1 { // for single filter `Operator` is not relevant
+		operator = filter.LogicOperatorAnd
 	}
 	var logicOperator string
-	switch request.Operator {
+	switch operator {
 	case filter.LogicOperatorAnd:
 		logicOperator = "AND"
 	case filter.LogicOperatorOr:
 		logicOperator = "OR"
 	default:
-		return nil, fmt.Errorf("invalid filter logic operator: %s", request.Operator)
+		return nil, fmt.Errorf("invalid filter logic operator: %s", operator)
 	}
 
 	qb.query.WriteString("WHERE ")
