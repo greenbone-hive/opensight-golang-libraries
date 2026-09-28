@@ -108,13 +108,15 @@ func extractFieldValues(input any, compareOperator filter.CompareOperator) (resp
 	}
 
 	if values, isSlice := input.([]any); isSlice {
-		// validate values and escape special symbols
+		// escape special symbols in a copy, the values belong to the caller
+		resp = make([]any, len(values))
 		for index, value := range values {
 			if strValue, isString := value.(string); isString {
-				values[index] = processString(strValue)
+				value = processString(strValue)
 			}
+			resp[index] = value
 		}
-		return values
+		return resp
 	}
 
 	if strValue, isString := input.(string); isString {

@@ -807,6 +807,42 @@ func Test_PostgresQueryBuilder_Build(t *testing.T) {
 	}
 }
 
+// A caller builds the list and the count query from the same result selector,
+// so a build must leave the filter values as it found them.
+func Test_PostgresQueryBuilder_Build_KeepsFilterValues(t *testing.T) {
+	underscore := TestDoc{ID: 1, String: "dev_gcp"}
+	wildcardMatch := TestDoc{ID: 2, String: "devXgcp"}
+
+	db := pgtesting.NewDB(t, migrationsFS, migrationDir)
+	repo := NewTestRepository(db)
+	for _, doc := range []TestDoc{underscore, wildcardMatch} {
+		require.NoError(t, repo.CreateTestDoc(&doc), "failed to create test document")
+	}
+
+	values := []any{"dev_gcp"}
+	resultSelector := singleFilter(filter.RequestField{
+		Name:     "stringField",
+		Operator: filter.CompareOperatorContains,
+		Value:    values,
+	})
+
+	for _, build := range []string{"first build", "second build"} {
+		builder, err := NewPostgresQueryBuilder(Settings{
+			FilterFieldMapping:      fieldMapping,
+			SortingTieBreakerColumn: sortingTieBreakerColumn,
+		})
+		require.NoError(t, err, "failed to create Postgres query builder")
+		conditionalQuery, args, err := builder.Build(resultSelector)
+		require.NoError(t, err, "unexpected error building query")
+
+		gotDocs, err := repo.ListTestDocs(unfilteredListTestypesQuery+` `+conditionalQuery, args)
+		require.NoError(t, err, "failed to list documents")
+		require.Len(t, gotDocs, 1, build)
+		assert.Equal(t, underscore.ID, gotDocs[0].ID, build)
+		assert.Equal(t, []any{"dev_gcp"}, values, build)
+	}
+}
+
 func Test_NewPostgresQueryBuilder(t *testing.T) {
 	tests := []struct {
 		name     string
