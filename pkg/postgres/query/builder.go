@@ -97,7 +97,9 @@ func extractFieldValues(input any, compareOperator filter.CompareOperator) (resp
 		case
 			// compareOperators using LIKE or ILIKE operators
 			filter.CompareOperatorBeginsWith,
+			filter.CompareOperatorDoesNotBeginWith,
 			filter.CompareOperatorContains,
+			filter.CompareOperatorDoesNotContain,
 			filter.CompareOperatorIsStringCaseInsensitiveEqualTo:
 
 			return likeReplacer.Replace(str)
