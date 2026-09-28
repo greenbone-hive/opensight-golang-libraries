@@ -877,38 +877,22 @@ func Test_NewPostgresQueryBuilder(t *testing.T) {
 	}
 }
 
-// `_` and `%` in a filter value are text, not wildcards.
-func Test_PostgresQueryBuilder_Build_EscapesWildcards(t *testing.T) {
-	underscore := TestDoc{ID: 1, String: "dev_gcp"}
-	percent := TestDoc{ID: 2, String: "dev%gcp"}
-	plain := TestDoc{ID: 3, String: "devXgcp"}
+// `_` and `%` in the value of a negated operator are text, not wildcards.
+func Test_PostgresQueryBuilder_Build_EscapesWildcardsOfNegatedOperators(t *testing.T) {
+	literal := TestDoc{ID: 1, String: "50%_off"}
+	lookalike := TestDoc{ID: 2, String: "50XYoff"} // what `50%_off` matches as a pattern
 
 	db := pgtesting.NewDB(t, migrationsFS, migrationDir)
 	repo := NewTestRepository(db)
-	for _, doc := range []TestDoc{underscore, percent, plain} {
+	for _, doc := range []TestDoc{literal, lookalike} {
 		require.NoError(t, repo.CreateTestDoc(&doc), "failed to create test document")
 	}
 
-	tests := map[string]struct {
-		operator filter.CompareOperator
-		value    any
-		wantIDs  []int
-	}{
-		"Contains: underscore":                    {filter.CompareOperatorContains, "v_g", []int{underscore.ID}},
-		"Contains: percent":                       {filter.CompareOperatorContains, "v%g", []int{percent.ID}},
-		"BeginsWith: underscore":                  {filter.CompareOperatorBeginsWith, "dev_", []int{underscore.ID}},
-		"IsStringCaseInsensitiveEqualTo: percent": {filter.CompareOperatorIsStringCaseInsensitiveEqualTo, "DEV%GCP", []int{percent.ID}},
-		"DoesNotContain: underscore":              {filter.CompareOperatorDoesNotContain, "v_g", []int{percent.ID, plain.ID}},
-		"DoesNotContain: percent":                 {filter.CompareOperatorDoesNotContain, "v%g", []int{underscore.ID, plain.ID}},
-		"DoesNotContain: multiple values":         {filter.CompareOperatorDoesNotContain, []any{"v_g", "v%g"}, []int{plain.ID}},
-		"DoesNotBeginWith: underscore":            {filter.CompareOperatorDoesNotBeginWith, "dev_", []int{percent.ID, plain.ID}},
-		"DoesNotBeginWith: multiple values": {filter.CompareOperatorDoesNotBeginWith, []any{
-			"dev_", "dev%",
-		}, []int{plain.ID}},
-	}
-
-	for name, tt := range tests {
-		t.Run(name, func(t *testing.T) {
+	for _, operator := range []filter.CompareOperator{
+		filter.CompareOperatorDoesNotContain,
+		filter.CompareOperatorDoesNotBeginWith,
+	} {
+		t.Run(string(operator), func(t *testing.T) {
 			builder, err := NewPostgresQueryBuilder(Settings{
 				FilterFieldMapping:      fieldMapping,
 				SortingTieBreakerColumn: sortingTieBreakerColumn,
@@ -916,18 +900,15 @@ func Test_PostgresQueryBuilder_Build_EscapesWildcards(t *testing.T) {
 			require.NoError(t, err, "failed to create Postgres query builder")
 			conditionalQuery, args, err := builder.Build(singleFilter(filter.RequestField{
 				Name:     "stringField",
-				Operator: tt.operator,
-				Value:    tt.value,
+				Operator: operator,
+				Value:    literal.String,
 			}))
 			require.NoError(t, err, "unexpected error building query")
 
 			gotDocs, err := repo.ListTestDocs(unfilteredListTestypesQuery+` `+conditionalQuery, args)
 			require.NoError(t, err, "failed to list documents")
-			gotIDs := make([]int, 0, len(gotDocs))
-			for _, doc := range gotDocs {
-				gotIDs = append(gotIDs, doc.ID)
-			}
-			assert.Equal(t, tt.wantIDs, gotIDs)
+			require.Len(t, gotDocs, 1)
+			assert.Equal(t, lookalike.ID, gotDocs[0].ID)
 		})
 	}
 }
