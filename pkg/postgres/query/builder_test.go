@@ -106,6 +106,26 @@ func singleFilter(f filter.RequestField) query.ResultSelector {
 	}
 }
 
+// A single filter needs no logic operator; the one Build assumes for it is not
+// written into the filter of the caller.
+func Test_PostgresQueryBuilder_Build_KeepsFilterOperator(t *testing.T) {
+	resultSelector := singleFilter(filter.RequestField{
+		Name:     "stringField",
+		Operator: filter.CompareOperatorIsEqualTo,
+		Value:    "value",
+	})
+
+	builder, err := NewPostgresQueryBuilder(Settings{
+		FilterFieldMapping:      fieldMapping,
+		SortingTieBreakerColumn: sortingTieBreakerColumn,
+	})
+	require.NoError(t, err, "failed to create Postgres query builder")
+	_, _, err = builder.Build(resultSelector)
+	require.NoError(t, err, "unexpected error building query")
+
+	assert.Empty(t, resultSelector.Filter.Operator)
+}
+
 func Test_PostgresQueryBuilder_Build(t *testing.T) {
 	doc0 := TestDoc{
 		ID: 0,
