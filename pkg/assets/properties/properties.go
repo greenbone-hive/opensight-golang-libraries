@@ -66,13 +66,17 @@ const (
 	Rules               = "rules"
 	AssociatedSubnetIDs = "associatedSubnetIds"
 	IsMain              = "isMain"
-	SubnetID            = "subnetId" // InSubnet FK: NIC -> Subnet node id
-	AttachedInstanceID  = "attachedInstanceId"
-	PrivateIPs          = "privateIps"
-	PublicIPIDs         = "publicIpIds"
-	IPForwardingEnabled = "ipForwardingEnabled"
-	AttachedNicIDs      = "attachedNicIds"
-	AttachedSubnetIDs   = "attachedSubnetIds"
+	// GatewayRoutesPropagated is whether a route table receives the routes a
+	// virtual network gateway or a virtual hub learns (Azure: the inverse of
+	// disableBgpRoutePropagation); hub and gateway adjacency read it.
+	GatewayRoutesPropagated = "gatewayRoutesPropagated"
+	SubnetID                = "subnetId" // InSubnet FK: NIC -> Subnet node id
+	AttachedInstanceID      = "attachedInstanceId"
+	PrivateIPs              = "privateIps"
+	PublicIPIDs             = "publicIpIds"
+	IPForwardingEnabled     = "ipForwardingEnabled"
+	AttachedNicIDs          = "attachedNicIds"
+	AttachedSubnetIDs       = "attachedSubnetIds"
 	// ApplicationSecurityGroupIDs is a NIC's Azure ASG membership: the set of
 	// applicationSecurityGroups its ipConfigurations belong to. It is what lets an
 	// NSG rule's asg: ref resolve to member NICs
@@ -158,6 +162,10 @@ const (
 	AllowForwardedTraffic = "allowForwardedTraffic" // transitivity gate
 	AllowGatewayTransit   = "allowGatewayTransit"   // transitivity gate
 	UseRemoteGateways     = "useRemoteGateways"     // transitivity gate
+	// AllowVirtualNetworkAccess is whether a peering lets the local network
+	// reach the remote one (Azure); false blocks the traffic over a connected
+	// peering.
+	AllowVirtualNetworkAccess = "allowVirtualNetworkAccess"
 	// TransitHub.
 	DefaultRouteTableAssociation = "defaultRouteTableAssociation"
 	AddressPrefix                = "addressPrefix"
@@ -687,6 +695,7 @@ var All = []string{
 	Rules,
 	AssociatedSubnetIDs,
 	IsMain,
+	GatewayRoutesPropagated,
 	SubnetID,
 	AttachedInstanceID,
 	PrivateIPs,
@@ -736,6 +745,7 @@ var All = []string{
 	AllowForwardedTraffic,
 	AllowGatewayTransit,
 	UseRemoteGateways,
+	AllowVirtualNetworkAccess,
 	DefaultRouteTableAssociation,
 	AddressPrefix,
 	HubAttachments,
